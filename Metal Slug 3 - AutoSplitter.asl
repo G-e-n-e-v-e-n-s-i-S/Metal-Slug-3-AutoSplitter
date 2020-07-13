@@ -1,4 +1,4 @@
-﻿
+
 state("mslug3")
 {
 
@@ -149,27 +149,7 @@ startup
 	//The time at which the last scan for the screen region happenend
 	vars.prevScanTimeScreen = -1;
 
-
-
-	//An array of bytes to find the boss's health variable
-	vars.scannerTargetBossHealth = new SigScanTarget(22, "10 00 A0 A0 ?? 00 00 ?? ?? 01 00 ?? ?? 00 00 ?? ?? 01 00 ?? 00 ?? ?? ?? 09");
-
 	
-	
-	//The pointer to the boss's health, once we found it with the scan
-	vars.pointerBossHealth = IntPtr.Zero;
-
-
-
-	//A watcher for this pointer
-	vars.watcherBossHealth = new MemoryWatcher<short>(IntPtr.Zero);
-
-
-
-	//The time at which the last scan happenend
-	vars.prevScanTimeBossHealth = -1;
-
-
 
 	//The time at which the last split happenend
 	vars.prevSplitTime = -1;
@@ -233,16 +213,16 @@ init
 		//The exclamation mark in the Mission Complete !" text
 		//Starts at pixel ( 247 , 113 )
 		vars.colorsExclamationMark = new byte[] {
-													0,		0,		0,		0,
+													0,	0,	0,	0,
 													248,	248,	248,	0,
-													0,		0,		120,	0,
-													48,		208,	248,	0,
-													24,		144,	248,	0,
-													48,		208,	248,	0,
-													24,		144,	248,	0,
-													48,		208,	248,	0,
+													0,	0,	120,	0,
+													48,	208,	248,	0,
+													24,	144,	248,	0,
+													48,	208,	248,	0,
+													24,	144,	248,	0,
+													48,	208,	248,	0,
 													248,	248,	248,	0,
-													0,		0,		0,		0
+													0,	0,	0,	0
 												};
 
 		vars.offsetExclamationMark = 0x21C9C;
@@ -252,16 +232,16 @@ init
 		//The nose of Morden when he hits the ground after falling from the Hi-Do
 		//Starts at pixel ( 188 , 188 )
 		vars.colorsMorden = new byte[]			{
-													24,		48,		48,		0,
-													24,		48,		48,		0,
+													24,	48,	48,	0,
+													24,	48,	48,	0,
 													112,	144,	144,	0,
 													112,	144,	144,	0,
-													64,		96,		96,		0,
+													64,	96,	96,	0,
 													160,	216,	248,	0,
 													160,	216,	248,	0,
 													224,	248,	248,	0,
-													56,		96,		128,	0,
-													0,		16,		16,		0
+													56,	96,	128,	0,
+													0,	16,	16,	0
 												};
 
 		vars.offsetMorden =	0x37FF0;
@@ -274,10 +254,10 @@ init
 													112,	112,	104,	0,
 													136,	144,	144,	0,
 													112,	112,	104,	0,
-													88,		88,		80,		0,
+													88,	88,	80,	0,
 													112,	112,	104,	0,
 													112,	112,	104,	0,
-													88,		88,		80,		0,
+													88,	88,	80,	0,
 													112,	112,	104,	0,
 													136,	144,	144,	0,
 													112,	112,	104,	0
@@ -292,28 +272,28 @@ init
 		//Starts at pixel ( 286 , 173 )
 		vars.colorsFakeRoot1 = new byte[]		{
 													0,		0,		0,		0,
-													64,		104,	136,	0,
-													48,		80,		112,	0,
-													48,		80,		112,	0,
+													64,		104,		136,		0,
+													48,		80,		112,		0,
+													48,		80,		112,		0,
 													0,		0,		0,		0,
-													64,		104,	136,	0,
-													64,		104,	136,	0,
-													88,		136,	168,	0,
+													64,		104,		136,		0,
+													64,		104,		136,		0,
+													88,		136,		168,		0,
 													0,		0,		0,		0,
-													88,		136,	168,	0
+													88,		136,		168,		0
 												};
 
 		vars.colorsFakeRoot2 = new byte[]		{
 													0,		0,		0,		0,
-													64,		104,	136,	0,
-													88,		136,	168,	0,
-													64,		104,	136,	0,
+													64,		104,		136,		0,
+													88,		136,		168,		0,
+													64,		104,		136,		0,
 													0,		0,		0,		0,
-													88,		136,	168,	0,
-													88,		136,	168,	0,
-													88,		136,	168,	0,
+													88,		136,		168,		0,
+													88,		136,		168,		0,
+													88,		136,		168,		0,
 													0,		0,		0,		0,
-													64,		104,	136,	0
+													64,		104,		136,		0
 												};
 
 		vars.offsetFakeRoot = 0x33A38;
@@ -323,8 +303,8 @@ init
 		//The rim of Rugname when we exit it just before fighting True Root
 		//Starts at pixel ( 36, 0 )
 		vars.colorsExit = new byte[]			{
-													88,		104,	104,	0,
-													248,	248,	248,	0,
+													88,		104,		104,		0,
+													248,		248,		248,		0,
 													24,		40,		40,		0,
 													24,		40,		40,		0,
 													24,		40,		40,		0,
@@ -332,7 +312,7 @@ init
 													40,		56,		56,		0,
 													40,		56,		56,		0,
 													24,		40,		40,		0,
-													128,	144,	144,	0
+													128,		144,		144,		0
 												};
 
 		vars.offsetExit = 0x90;
@@ -390,14 +370,14 @@ init
 		//Starts at pixel ( 247 , 113 )
 		vars.colorsExclamationMark = new byte[] {
 													0,		0,		0,		255,
-													255,	251,	255,	255,
-													0,		0,		123,	255,
-													49,		211,	255,	255,
-													24,		146,	255,	255,
-													49,		211,	255,	255,
-													24,		146,	255,	255,
-													49,		211,	255,	255,
-													255,	251,	255,	255,
+													255,		251,		255,		255,
+													0,		0,		123,		255,
+													49,		211,		255,		255,
+													24,		146,		255,		255,
+													49,		211,		255,		255,
+													24,		146,		255,		255,
+													49,		211,		255,		255,
+													255,		251,		255,		255,
 													0,		0,		0,		255
 												};
 
@@ -410,13 +390,13 @@ init
 		vars.colorsMorden = new byte[]			{
 													24,		48,		49,		255,
 													24,		48,		49,		255,
-													115,	146,	148,	255,
-													115,	146,	148,	255,
+													115,		146,		148,		255,
+													115,		146,		148,		255,
 													66,		97,		99,		255,
-													165,	219,	255,	255,
-													165,	219,	255,	255,
-													231,	251,	255,	255,
-													57,		97,		132,	255,
+													165,		219,		255,		255,
+													165,		219,		255,		255,
+													231,		251,		255,		255,
+													57,		97,		132,		255,
 													0,		16,		16,		255
 												};
 
@@ -430,10 +410,10 @@ init
 													115,	113,	107,	255,
 													140,	146,	148,	255,
 													115,	113,	107,	255,
-													90,		89,		82,		255,
+													90,	89,	82,	255,
 													115,	113,	107,	255,
 													115,	113,	107,	255,
-													90,		89,		82,		255,
+													90,	89,	82,	255,
 													115,	113,	107,	255,
 													140,	146,	148,	255,
 													115,	113,	107,	255
@@ -448,28 +428,28 @@ init
 		//Starts at pixel ( 286 , 173 )
 		vars.colorsFakeRoot1 = new byte[]		{
 													0,		0,		0,		255,
-													66,		105,	140,	255,
-													49,		81,		115,	255,
-													49,		81,		115,	255,
+													66,		105,		140,		255,
+													49,		81,		115,		255,
+													49,		81,		115,		255,
 													0,		0,		0,		255,
-													66,		105,	140,	255,
-													66,		105,	140,	255,
-													90,		138,	173,	255,
+													66,		105,		140,		255,
+													66,		105,		140,		255,
+													90,		138,		173,		255,
 													0,		0,		0,		255,
-													90,		138,	173,	255
+													90,		138,		173,		255
 												};
 
 		vars.colorsFakeRoot2 = new byte[]		{
 													0,		0,		0,		255,
-													66,		105,	140,	255,
-													90,		138,	173,	255,
-													66,		105,	140,	255,
+													66,		105,		140,		255,
+													90,		138,		173,		255,
+													66,		105,		140,		255,
 													0,		0,		0,		255,
-													90,		138,	173,	255,
-													90,		138,	173,	255,
-													90,		138,	173,	255,
+													90,		138,		173,		255,
+													90,		138,		173,		255,
+													90,		138,		173,		255,
 													0,		0,		0,		255,
-													66,		105,	140,	255
+													66,		105,		140,		255
 												};
 		
 		vars.offsetFakeRoot = 0x56CA7;
@@ -479,8 +459,8 @@ init
 		//The rim of Rugname when we exit it just before fighting True Root
 		//Starts at pixel ( 36, 0 )
 		vars.colorsExit = new byte[]			{
-													90,		105,	107,	255,
-													255,	251,	255,	255,
+													90,		105,		107,		255,
+													255,		251,		255,		255,
 													24,		40,		41,		255,
 													24,		40,		41,		255,
 													24,		40,		41,		255,
@@ -488,7 +468,7 @@ init
 													41,		56,		57,		255,
 													41,		56,		57,		255,
 													24,		40,		41,		255,
-													132,	146,	148,	255
+													132,		146,		148,		255
 												};
 
 		vars.offsetExit = 0xBF;
@@ -535,11 +515,7 @@ exit
 	vars.pointerScreen = IntPtr.Zero;
 	
 	vars.watcherScreen = null;
-
-	vars.pointerBossHealth = IntPtr.Zero;
-
-	vars.watcherBossHealth = null;
-
+	
 }
 
 
@@ -641,12 +617,6 @@ reset
 		vars.prevSplitTime = -1;
 		
 		vars.prevScanTimeScreen = -1;
-
-		vars.prevScanTimeBossHealth = -1;
-		
-		vars.pointerBossHealth = IntPtr.Zero;
-
-		vars.watcherBossHealth = null;
 
 		return true;
 	}
