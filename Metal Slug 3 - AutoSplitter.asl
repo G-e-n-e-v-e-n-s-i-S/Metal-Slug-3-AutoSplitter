@@ -256,10 +256,10 @@ init
 													112,	112,	104,	0,
 													136,	144,	144,	0,
 													112,	112,	104,	0,
-													88,	88,	80,	0,
+													88,		88,		80,		0,
 													112,	112,	104,	0,
 													112,	112,	104,	0,
-													88,	88,	80,	0,
+													88,		88,		80,		0,
 													112,	112,	104,	0,
 													136,	144,	144,	0,
 													112,	112,	104,	0
@@ -511,7 +511,9 @@ exit
 	//The pointers and watchers are no longer valid
 	vars.pointerScreen = IntPtr.Zero;
 	
-	vars.watcherScreen = null;
+	vars.watcherScreen = new MemoryWatcher<short>(IntPtr.Zero);
+
+	vars.watcherScreen.FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
 	
 }
 
