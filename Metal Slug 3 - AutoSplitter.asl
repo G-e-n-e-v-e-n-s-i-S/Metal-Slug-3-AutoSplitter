@@ -231,6 +231,25 @@ init
 		
 		
 		
+		//The grey of the UI
+		//Starts at pixel ( 80 , 8 )
+		vars.colorsUI = new byte[]				{
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0,
+													184,	168,	160,	0
+												};
+
+		vars.offsetUI = 0x2740;
+		
+		
+		
 		//The nose of Morden when he hits the ground after falling from the Hi-Do
 		//Starts at pixel ( 188 , 188 )
 		vars.colorsMorden = new byte[]			{
@@ -250,22 +269,22 @@ init
 
 
 
-		//The wall of Rugname we smash into
-		//Starts at pixel ( 147 , 35 )
+		//The wall of Rugname we smash into, mingled with the fade
+		//Starts at pixel ( 152 , 27 )
 		vars.colorsRugname = new byte[]			{
-													112,	112,	104,	0,
-													136,	144,	144,	0,
-													112,	112,	104,	0,
-													88,		88,		80,		0,
-													112,	112,	104,	0,
-													112,	112,	104,	0,
-													88,		88,		80,		0,
-													112,	112,	104,	0,
-													136,	144,	144,	0,
-													112,	112,	104,	0
+													112, 112, 104, 0,
+													0, 0, 0, 0,
+													88, 88, 80, 0,
+													0, 0, 0, 0,
+													72, 72, 72, 0,
+													0, 0, 0, 0,
+													72, 72, 72, 0,
+													0, 0, 0, 0,
+													88, 88, 80, 0,
+													0, 0, 0, 0
 												};
 
-		vars.offsetRugname = 0xA88C;
+		vars.offsetRugname = 0x82A0;
 
 
 
@@ -387,6 +406,25 @@ init
 
 
 
+		//The grey of the UI
+		//Starts at pixel ( 80 , 8 )
+		vars.colorsUI = new byte[]				{
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255,
+													189,	170,	165,	255
+												};
+
+		vars.offsetUI = 0x416F;
+		
+		
+		
 		//The nose of Morden when he hits the ground after falling from the Hi-Do
 		//Starts at pixel ( 188 , 188 )
 		vars.colorsMorden = new byte[]			{
@@ -406,22 +444,22 @@ init
 
 
 
-		//The wall of Rugname we smash into
-		//Starts at pixel ( 147 , 35 )
+		//The wall of Rugname we smash into, mingled with the fade
+		//Starts at pixel ( 152 , 27 )
 		vars.colorsRugname = new byte[]			{
-													115,	113,	107,	255,
-													140,	146,	148,	255,
-													115,	113,	107,	255,
-													90,		89,		82,		255,
-													115,	113,	107,	255,
-													115,	113,	107,	255,
-													90,		89,		82,		255,
-													115,	113,	107,	255,
-													140,	146,	148,	255,
-													115,	113,	107,	255
+													115, 113, 107, 255,
+													0, 0, 0, 255,
+													90, 89, 82, 255,
+													0, 0, 0, 255,
+													74, 73, 74, 255,
+													0, 0, 0, 255,
+													74, 73, 74, 255,
+													0, 0, 0, 255,
+													90, 89, 82, 255,
+													0, 0, 0, 255
 												};
 		
-		vars.offsetRugname = 0x11A7B;
+		vars.offsetRugname = 0xDA8F;
 
 
 
@@ -659,7 +697,7 @@ split
 	//Check time since last split, don't split if we already split in the last 20 seconds
 	var timeSinceLastSplit = Environment.TickCount - vars.prevSplitTime;
 	
-	if (vars.prevSplitTime != -1 && timeSinceLastSplit< 20000)
+	if (vars.prevSplitTime != -1 && timeSinceLastSplit < 20000)
 	{
 		return false;
 	}
@@ -675,26 +713,42 @@ split
 
 
 	//Missions 1, 2, 3 and 4
-	if (vars.splitCounter< 4)
+	if (vars.splitCounter < 8)
 	{
 		
-		//Split when the exclamation mark from the "Mission Complete !" text is in the right spot
-		byte[] pixels = vars.ReadArray(game, vars.offsetExclamationMark);
-
-		if (vars.MatchArray(pixels, vars.colorsExclamationMark))
+		if (vars.splitCounter % 2 == 0)
 		{
-			vars.splitCounter++;
 			
-			vars.prevSplitTime = Environment.TickCount;
+			//Check for the exclamation mark from the "Mission Complete !" text
+			byte[] pixels = vars.ReadArray(game, vars.offsetExclamationMark);
 			
-			return true;
+			if (vars.MatchArray(pixels, vars.colorsExclamationMark))
+			{
+				vars.splitCounter++;
+			}
+		}
+
+		else
+		{
+
+			//Split when the UI disappears after we've seen the exclamation mark
+			byte[] pixels = vars.ReadArray(game, vars.offsetUI);
+			
+			if (!vars.MatchArray(pixels, vars.colorsUI))
+			{
+				vars.splitCounter++;
+			
+				vars.prevSplitTime = Environment.TickCount;
+			
+				return true;
+			}
 		}
 	}
 
 
 
 	//For Morden
-	else if (vars.splitCounter == 4)
+	else if (vars.splitCounter == 8)
 	{
 		
 		//Split when Morden's face hits the ground
@@ -713,7 +767,7 @@ split
 
 
 	//For Rugname
-	else if (vars.splitCounter == 5)
+	else if (vars.splitCounter == 9)
 	{
 		
 		//Split when we hit the inner wall of Rugname
@@ -732,7 +786,7 @@ split
 
 
 	//For Fake Rootmars
-	else if (vars.splitCounter == 6)
+	else if (vars.splitCounter == 10)
 	{
 
 		//Split when the fadeout occurs after Fake Root
@@ -752,7 +806,7 @@ split
 	
 
 	//Knowing when we get to the last boss
-	else if (vars.splitCounter == 7)
+	else if (vars.splitCounter == 11)
 	{
 		
 		//When we exit Rugname
@@ -777,7 +831,7 @@ split
 	
 
 	//For True Rootmars
-	else if (vars.splitCounter == 8)
+	else if (vars.splitCounter == 12)
 	{
 		
 		//Split when the background becomes completely black
