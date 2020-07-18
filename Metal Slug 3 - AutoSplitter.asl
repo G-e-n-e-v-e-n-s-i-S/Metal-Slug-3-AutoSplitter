@@ -57,7 +57,7 @@ startup
 
 		if (!succes)
 		{
-			print("[MS3 AutoSplitter] Failed to read screen");
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Failed to read screen");
 		}
 
 		return bytes;
@@ -100,7 +100,7 @@ startup
 
 		if (bytes == null)
 		{
-			print("[MS3 AutoSplitter] Bytes are null");
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Bytes are null");
 		}
 
 		else
@@ -580,7 +580,7 @@ update
 		{
 			
 			//Notify
-			print("[MS3 AutoSplitter] Screen region changed");
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Screen region changed");
 
 
 
@@ -602,7 +602,7 @@ update
 			{
 				
 				//Notify
-				print("[MS3 AutoSplitter] Scanning for screen");
+				print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Scanning for screen");
 
 
 
@@ -616,7 +616,7 @@ update
 				{
 					
 					//Notify
-					print("[MS3 AutoSplitter] Found screen");
+					print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Found screen");
 
 
 
@@ -664,6 +664,8 @@ reset
 	
 	if (vars.restart)
 	{
+		print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Restarting");
+
 		vars.splitCounter = 0;
 		
 		vars.prevSplitTime = -1;
@@ -725,6 +727,8 @@ split
 			if (vars.MatchArray(pixels, vars.colorsExclamationMark))
 			{
 				vars.splitCounter++;
+
+				print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
 			}
 		}
 
@@ -738,6 +742,8 @@ split
 			{
 				vars.splitCounter++;
 			
+				print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+				
 				vars.prevSplitTime = Environment.TickCount;
 			
 				return true;
@@ -758,6 +764,8 @@ split
 		{
 			vars.splitCounter++;
 			
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+
 			vars.prevSplitTime = Environment.TickCount;
 			
 			return true;
@@ -777,6 +785,8 @@ split
 		{
 			vars.splitCounter++;
 			
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+
 			vars.prevSplitTime = Environment.TickCount;
 			
 			return true;
@@ -797,6 +807,8 @@ split
 		{
 			vars.splitCounter++;
 			
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+
 			vars.prevSplitTime = Environment.TickCount;
 			
 			return true;
@@ -816,13 +828,15 @@ split
 		{
 			
 			//Notify
-			print("[MS3 AutoSplitter] Last fight starting");
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Last fight starting");
 
 
 
 			//Move to next phase, prevent splitting for 20 seconds (but don't actually split)
 			vars.splitCounter++;
 			
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+
 			vars.prevSplitTime = Environment.TickCount;
 			
 		}
@@ -844,7 +858,7 @@ split
 		
 		if (vars.MatchArray(pixels1, vars.colorsTrueRoot) || vars.MatchArray(pixels2, vars.colorsTrueRoot) || vars.MatchArray(pixels3, vars.colorsTrueRoot))
 		{
-			print("[MSX AutoSplitter] Run end");
+			print(Environment.TickCount.ToString() + " [MSX AutoSplitter] Run end");
 
 			vars.splitCounter++;
 			
