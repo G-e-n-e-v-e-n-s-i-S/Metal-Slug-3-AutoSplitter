@@ -156,16 +156,16 @@ startup
 	//The time at which the last split happenend
 	vars.prevSplitTime = -1;
 
-
-
-	//The time at which the last debug message was printed
-	vars.prevDebugDisplayTime = -1;
-
-
+	
 
 	//The split/state we are currently on
 	vars.splitCounter = 0;
 	
+
+
+	//A local tickCount to do stuff sometimes
+	vars.localTickCount = 0;
+
 }
 
 
@@ -408,9 +408,9 @@ init
 												};
 
 		vars.offsetExclamationMark = 0x38C0B;
-
-
-
+		
+		
+		
 		//The grey of the UI
 		//Starts at pixel ( 80 , 8 )
 		vars.colorsUI = new byte[]				{
@@ -444,7 +444,7 @@ init
 													57,		97,		132,	255,
 													0,		16,		16,		255
 												};
-
+		
 		vars.offsetMorden =	0x5E31F;
 
 
@@ -465,9 +465,9 @@ init
 												};
 		
 		vars.offsetRugname = 0xDA8F;
-
-
-
+		
+		
+		
 		//The foreground after defeating Fake Root, mingled with the second dither pattern of the screen fade
 		//The screen shakes at 60Hz here, so we need two values to be sure
 		//Starts at pixel ( 286 , 173 )
@@ -567,30 +567,23 @@ exit
 update
 {
 	
-	//If the debug cooldown has elapsed
-	var timeSinceLastDebug = Environment.TickCount - vars.prevDebugDisplayTime;
-	
-	if (timeSinceLastDebug > 10000)
+	//Increase local tickCount
+	vars.localTickCount = vars.localTickCount + 1;
+
+
+
+	//Debug Print
+	if (vars.localTickCount % 400 == 0)
 	{
-		
-		//Debug Print
-		print("[MS3 Splitter] Debug " + Environment.TickCount.ToString() + " " + vars.splitCounter.ToString());
+		print("[MS3 Splitter] Debug " + Environment.TickCount.ToString() + " " + vars.localTickCount.ToString() + " " + vars.splitCounter.ToString());
 		
 		if (vars.pointerScreen != IntPtr.Zero)
 		{
 			print("Screen known");
 		}
-
-
-		
-		//Write down scan time
-		vars.prevDebugDisplayTime = Environment.TickCount;
-			
 	}
-
-
-
-
+	
+	
 
 	//Try to find the screen
 	//For Kawaks, follow the pointer path
@@ -739,8 +732,28 @@ split
 	//If we dont know where the screen is, stop
 	if (vars.pointerScreen == IntPtr.Zero)
 	{
-		print("Abort");
+		print("[MS3 Splitter] Aborting split()");
+
 		return false;
+	}
+	
+	
+	
+	//Debug Print
+	if (vars.localTickCount % 10 == 0)
+	{
+		byte[] bytes = vars.ReadArray(game, vars.offsetExclamationMark);
+
+		var str = new System.Text.StringBuilder();
+
+		for (int i = 0; i<bytes.Length; i++)
+		{
+			str.Append(bytes[i].ToString());
+
+			str.Append(" ");
+		}
+
+		print(str.ToString());
 	}
 
 
@@ -889,7 +902,7 @@ split
 		
 		if (vars.MatchArray(pixels1, vars.colorsTrueRoot) || vars.MatchArray(pixels2, vars.colorsTrueRoot) || vars.MatchArray(pixels3, vars.colorsTrueRoot))
 		{
-			print(Environment.TickCount.ToString() + " [MSX AutoSplitter] Run end");
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Run end");
 
 			vars.splitCounter++;
 			
