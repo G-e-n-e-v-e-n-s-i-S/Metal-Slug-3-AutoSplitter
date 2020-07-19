@@ -57,7 +57,7 @@ startup
 
 		if (!succes)
 		{
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Failed to read screen");
+			print("[MS3 Splitter] Failed to read screen");
 		}
 
 		return bytes;
@@ -100,7 +100,7 @@ startup
 
 		if (bytes == null)
 		{
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Bytes are null");
+			print("[MS3 Splitter] Bytes are null");
 		}
 
 		else
@@ -155,6 +155,11 @@ startup
 
 	//The time at which the last split happenend
 	vars.prevSplitTime = -1;
+
+
+
+	//The time at which the last debug message was printed
+	vars.prevDebugDisplayTime = -1;
 
 
 
@@ -562,6 +567,31 @@ exit
 update
 {
 	
+	//If the debug cooldown has elapsed
+	var timeSinceLastDebug = Environment.TickCount - vars.prevDebugDisplayTime;
+	
+	if (timeSinceLastDebug > 10000)
+	{
+		
+		//Debug Print
+		print("[MS3 Splitter] Debug " + Environment.TickCount.ToString() + " " + vars.splitCounter.ToString());
+		
+		if (vars.pointerScreen != IntPtr.Zero)
+		{
+			print("Screen known");
+		}
+
+
+		
+		//Write down scan time
+		vars.prevDebugDisplayTime = Environment.TickCount;
+			
+	}
+
+
+
+
+
 	//Try to find the screen
 	//For Kawaks, follow the pointer path
 	if(game.ProcessName.Equals("WinKawaks"))
@@ -580,7 +610,7 @@ update
 		{
 			
 			//Notify
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Screen region changed");
+			print("[MS3 Splitter] Screen region changed");
 
 
 
@@ -602,7 +632,7 @@ update
 			{
 				
 				//Notify
-				print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Scanning for screen");
+				print("[MS3 Splitter] Scanning for screen");
 
 
 
@@ -616,7 +646,7 @@ update
 				{
 					
 					//Notify
-					print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Found screen");
+					print("[MS3 Splitter] Found screen");
 
 
 
@@ -664,7 +694,7 @@ reset
 	
 	if (vars.restart)
 	{
-		print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Restarting");
+		print("[MS3 Splitter] Restarting");
 
 		vars.splitCounter = 0;
 		
@@ -709,6 +739,7 @@ split
 	//If we dont know where the screen is, stop
 	if (vars.pointerScreen == IntPtr.Zero)
 	{
+		print("Abort");
 		return false;
 	}
 
@@ -728,7 +759,7 @@ split
 			{
 				vars.splitCounter++;
 
-				print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+				print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 			}
 		}
 
@@ -742,7 +773,7 @@ split
 			{
 				vars.splitCounter++;
 			
-				print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+				print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 				
 				vars.prevSplitTime = Environment.TickCount;
 			
@@ -764,7 +795,7 @@ split
 		{
 			vars.splitCounter++;
 			
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -785,7 +816,7 @@ split
 		{
 			vars.splitCounter++;
 			
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -807,7 +838,7 @@ split
 		{
 			vars.splitCounter++;
 			
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -828,14 +859,14 @@ split
 		{
 			
 			//Notify
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Last fight starting");
+			print("[MS3 Splitter] Last fight starting");
 
 
 
 			//Move to next phase, prevent splitting for 20 seconds (but don't actually split)
 			vars.splitCounter++;
 			
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Advancing to state " + vars.splitCounter.ToString());
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
