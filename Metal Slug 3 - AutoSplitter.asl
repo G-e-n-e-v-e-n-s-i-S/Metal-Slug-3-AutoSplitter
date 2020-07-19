@@ -176,7 +176,7 @@ init
 {
 	
 	//Set refresh rate
-	refreshRate = 33;
+	refreshRate = 60;
 
 
 
@@ -668,8 +668,8 @@ update
 		//Debug print an array
 		//print("Rugname");
 		
-		//vars.PrintArray(vars.ReadArray(game, vars.offsetRugname));
-
+		//if (vars.localTickCount % 20 == 0) vars.PrintArray(vars.ReadArray(game, vars.offsetRunStart));
+		
 		
 	
 		//Check if we should start/restart the timer
@@ -732,7 +732,7 @@ split
 	//If we dont know where the screen is, stop
 	if (vars.pointerScreen == IntPtr.Zero)
 	{
-		print("[MS3 Splitter] Aborting split()");
+		print("[MS3 Splitter] Aborting");
 
 		return false;
 	}
@@ -756,7 +756,7 @@ split
 		print(str.ToString());
 	}
 
-
+	
 
 	//Missions 1, 2, 3 and 4
 	if (vars.splitCounter < 8)
