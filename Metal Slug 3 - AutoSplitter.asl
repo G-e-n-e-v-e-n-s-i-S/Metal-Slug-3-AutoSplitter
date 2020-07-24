@@ -57,7 +57,7 @@ startup
 
 		if (!succes)
 		{
-			print("[MS3 Splitter] Failed to read screen");
+			print("[MS3 AutoSplitter] Failed to read screen");
 		}
 
 		return bytes;
@@ -110,7 +110,7 @@ startup
 
 		if (bytes == null)
 		{
-			print("[MS3 Splitter] Bytes are null");
+			print("[MS3 AutoSplitter] Bytes are null");
 		}
 
 		else
@@ -241,9 +241,8 @@ init
 													248,	248,	248,	0,
 													0,	0,	0,	0
 												};
-		vars.offsetExclamationMarkUp = 0x217DC;
+		
 		vars.offsetExclamationMark = 0x21C9C;
-		vars.offsetExclamationMarkDown = 0x2215C;
 		
 		
 		
@@ -600,11 +599,6 @@ update
 		if (vars.watcherScreen.Changed)
 		{
 			
-			//Notify
-			print("[MS3 Splitter] Screen region changed");
-
-
-
 			//Void the pointer
 			vars.pointerScreen = IntPtr.Zero;
 
@@ -623,7 +617,7 @@ update
 			{
 				
 				//Notify
-				print("[MS3 Splitter] Scanning for screen");
+				print("[MS3 AutoSplitter] Scanning for screen");
 
 
 
@@ -637,7 +631,7 @@ update
 				{
 					
 					//Notify
-					print("[MS3 Splitter] Found screen");
+					print("[MS3 AutoSplitter] Found screen");
 
 
 
@@ -663,46 +657,21 @@ update
 	if (vars.pointerScreen != IntPtr.Zero)
 	{
 		
-		//Debug print an array
-		//print("Rugname");
-		
-		//if (vars.localTickCount % 20 == 0) vars.PrintArray(vars.ReadArray(game, vars.offsetRunStart));
-		
-		//Debug Print
+		//Debug print
 		/*
-		byte[] bytesUp = vars.ReadArray(game, vars.offsetExclamationMarkUp);
-		byte[] bytes = vars.ReadArray(game, vars.offsetExclamationMark);
-		byte[] bytesDown = vars.ReadArray(game, vars.offsetExclamationMarkDown);
-
-		var strUp = new System.Text.StringBuilder();
-		var str = new System.Text.StringBuilder();
-		var strDown = new System.Text.StringBuilder();
-
-		for (int i = 0; i<bytes.Length; i++)
+		if (vars.localTickCount % 10 == 0)
 		{
-			strUp.Append(bytesUp[i].ToString());
-			str.Append(bytes[i].ToString());
-			strDown.Append(bytesDown[i].ToString());
+			print("[MS3 AutoSplitter] " + vars.splitCounter.ToString() + " - " + "RunStart");
 
-			strUp.Append(" ");
-			str.Append(" ");
-			strDown.Append(" ");
-
+			vars.PrintArray(vars.ReadArray(game, vars.offsetRunStart));
 		}
-
-		print("Splash Up      " + strUp.ToString());
-		print("Splash         " + str.ToString());
-		print("Splash Down    " + strDown.ToString());
-
-
-
-		//Check if we should start/restart the timer
-		vars.restart = vars.MatchArray(bytes, vars.colorsExclamationMark, 0);
 		*/
-
+		
+		
 		
 		//Check if we should start/restart the timer
 		vars.restart = vars.MatchArray(vars.ReadArray(game, vars.offsetRunStart), vars.colorsRunStart, 4);
+
 	}
 }
 
@@ -715,8 +684,6 @@ reset
 	
 	if (vars.restart)
 	{
-		print("[MS3 Splitter] Restarting");
-
 		vars.splitCounter = 0;
 		
 		vars.prevSplitTime = -1;
@@ -736,6 +703,12 @@ start
 	
 	if (vars.restart)
 	{
+		vars.splitCounter = 0;
+		
+		vars.prevSplitTime = -1;
+		
+		vars.prevScanTimeScreen = -1;
+
 		return true;
 	}
 }
@@ -760,28 +733,7 @@ split
 	//If we dont know where the screen is, stop
 	if (vars.pointerScreen == IntPtr.Zero)
 	{
-		print("[MS3 Splitter] Aborting");
-
 		return false;
-	}
-	
-	
-	
-	//Debug Print
-	if (vars.localTickCount % 10 == 0)
-	{
-		byte[] bytes = vars.ReadArray(game, vars.offsetExclamationMark);
-
-		var str = new System.Text.StringBuilder();
-
-		for (int i = 0; i<bytes.Length; i++)
-		{
-			str.Append(bytes[i].ToString());
-
-			str.Append(" ");
-		}
-
-		print(vars.splitCounter.ToString() + " - " + str.ToString());
 	}
 
 	
@@ -799,8 +751,6 @@ split
 			if (vars.MatchArray(pixels, vars.colorsExclamationMark, 0))
 			{
 				vars.splitCounter++;
-
-				print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 			}
 		}
 
@@ -813,8 +763,6 @@ split
 			if (!vars.MatchArray(pixels, vars.colorsUI, 0))
 			{
 				vars.splitCounter++;
-			
-				print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 				
 				vars.prevSplitTime = Environment.TickCount;
 			
@@ -835,8 +783,6 @@ split
 		if (vars.MatchArray(pixels, vars.colorsMorden, 0))
 		{
 			vars.splitCounter++;
-			
-			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -856,8 +802,6 @@ split
 		if (vars.MatchArray(pixels, vars.colorsRugname, 0))
 		{
 			vars.splitCounter++;
-			
-			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -878,8 +822,6 @@ split
 		if (vars.MatchArray(pixels, vars.colorsFakeRoot1, 0) || vars.MatchArray(pixels, vars.colorsFakeRoot2, 0))
 		{
 			vars.splitCounter++;
-			
-			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -899,15 +841,8 @@ split
 		if (vars.MatchArray(pixels, vars.colorsBossStart, 0))
 		{
 			
-			//Notify
-			print("[MS3 Splitter] Last fight starting");
-
-
-
 			//Move to next phase, prevent splitting for 20 seconds (but don't actually split)
 			vars.splitCounter++;
-			
-			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 
 			vars.prevSplitTime = Environment.TickCount;
 			
@@ -930,8 +865,6 @@ split
 		
 		if (vars.MatchArray(pixels1, vars.colorsTrueRoot, 0) || vars.MatchArray(pixels2, vars.colorsTrueRoot, 0) || vars.MatchArray(pixels3, vars.colorsTrueRoot, 0))
 		{
-			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Run end");
-
 			vars.splitCounter++;
 			
 			vars.prevSplitTime = Environment.TickCount;
