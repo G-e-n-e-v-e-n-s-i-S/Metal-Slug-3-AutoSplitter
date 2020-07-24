@@ -1,7 +1,7 @@
 
 
 
-state("mslug2")
+state("mslug3")
 {
 
 }
@@ -57,7 +57,7 @@ startup
 
 		if (!succes)
 		{
-			print("[MS2 AutoSplitter] Failed to read screen");
+			print("[MS3 Splitter] Failed to read screen");
 		}
 
 		return bytes;
@@ -69,24 +69,34 @@ startup
 
 
 	//A function that matches two arrays of bytes
-	Func<byte[], byte[], bool> MatchArray = (bytes, colors) =>
+	Func<byte[], byte[], int, bool> MatchArray = (bytes, colors, maxOffset) =>
 	{
 
 		if (bytes == null)
 		{
 			return false;
 		}
-
-		for (int i = 0; i < bytes.Length; i++)
+		
+		for (int j = 0; j <= maxOffset; j++)
 		{
 
-			if (bytes[i] != colors[i])
-			{
-				return false;
-			}
-		}
+			bool match = true;
 
-		return true;
+			for (int i = 0; i < bytes.Length - j; i++)
+			{
+				if (bytes[i+j] != colors[i])
+				{
+					match = false;
+
+					break;
+				}
+			}
+
+			if (match == true) return true;
+
+		}
+		
+		return false;
 
 	};
 
@@ -100,7 +110,7 @@ startup
 
 		if (bytes == null)
 		{
-			print("[MS2 AutoSplitter] Bytes are null");
+			print("[MS3 Splitter] Bytes are null");
 		}
 
 		else
@@ -151,32 +161,12 @@ startup
 	//The time at which the last scan for the screen region happenend
 	vars.prevScanTimeScreen = -1;
 
-
-
-	//An array of bytes to find the boss's health variable
-	vars.scannerTargetBossHealth = new SigScanTarget(22, "10 00 BE D5 ?? 00 ?? ?? ?? ?? ?? ?? ?? 00 ?? ?? ?? ?? ?? ?? ?? ?? ?? ?? 0A 00 F4 7C");
-
-
-
-	//The pointer to the boss's health, once we found it with the scan
-	vars.pointerBossHealth = IntPtr.Zero;
-
-
-
-	//A watcher for this pointer
-	vars.watcherBossHealth = new MemoryWatcher<short>(IntPtr.Zero);
-
-
-
-	//The time at which the last scan happenend
-	vars.prevScanTimeBossHealth = -1;
-
-
+	
 
 	//The time at which the last split happenend
 	vars.prevSplitTime = -1;
 
-
+	
 
 	//The split/state we are currently on
 	vars.splitCounter = 0;
@@ -199,6 +189,7 @@ init
 	refreshRate = 60;
 
 
+
 	/*
 	 * 
 	 * The various color arrays we will be checking for throughout the game
@@ -211,47 +202,51 @@ init
 	 * On the WinKawaks version, the offset is X * 0x4 + Y * 0x500
 	 * 
 	 */
+
+
+
 	if(game.ProcessName.Equals("WinKawaks"))
 	{
 		
-		//The footsteps in the sand when the character hits the ground at the start of mission 1
-		//Starts at pixel ( 104 , 147 )
+		//The water splash when the character hits the water at the start of mission 1
+		//Starts at pixel ( 65 , 180 )
 		vars.colorsRunStart = new byte[]		{
-													128,	232,	248,	0,
-													96,		192,	240,	0,
-													64,		144,	192,	0,
-													80,		168,	216,	0,
-													96,		192,	240,	0,
-													96,		192,	240,	0,
-													112,	216,	248,	0,
-													112,	216,	248,	0,
-													112,	216,	248,	0,
-													128,	232,	248,	0
+													208,	248,	240,	0,
+													168,	232,	200,	0,
+													160,	208,	168,	0,
+													208,	248,	240,	0,
+													208,	248,	240,	0,
+													160,	208,	168,	0,
+													168,	232,	200,	0,
+													160,	208,	168,	0,
+													168,	232,	200,	0,
+													208,	248,	240,	0
 												};
 		
-		vars.offsetRunStart = 0x2BBE0;
+		vars.offsetRunStart = 0x35804;
 		
 		
 		
 		//The exclamation mark in the Mission Complete !" text
 		//Starts at pixel ( 247 , 113 )
 		vars.colorsExclamationMark = new byte[] {
-													0,		0,		0,		0,
+													0,	0,	0,	0,
 													248,	248,	248,	0,
-													0,		0,		120,	0,
-													48,		208,	248,	0,
-													24,		144,	248,	0,
-													48,		208,	248,	0,
-													24,		144,	248,	0,
-													48,		208,	248,	0,
+													0,	0,	120,	0,
+													48,	208,	248,	0,
+													24,	144,	248,	0,
+													48,	208,	248,	0,
+													24,	144,	248,	0,
+													48,	208,	248,	0,
 													248,	248,	248,	0,
-													0,		0,		0,		0
+													0,	0,	0,	0
 												};
-
+		vars.offsetExclamationMarkUp = 0x217DC;
 		vars.offsetExclamationMark = 0x21C9C;
+		vars.offsetExclamationMarkDown = 0x2215C;
 		
 		
-
+		
 		//The grey of the UI
 		//Starts at pixel ( 80 , 8 )
 		vars.colorsUI = new byte[]				{
@@ -271,46 +266,140 @@ init
 		
 		
 		
-		//The rim of Rugname when it hits the ground after phase 1
-		//Starts at pixel ( 159 , 159 )
-		vars.colorsBossStart = new byte[]		{
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0,
-													88,		104,	104,	0
+		//The nose of Morden when he hits the ground after falling from the Hi-Do
+		//Starts at pixel ( 188 , 188 )
+		vars.colorsMorden = new byte[]			{
+													24,	48,	48,	0,
+													24,	48,	48,	0,
+													112,	144,	144,	0,
+													112,	144,	144,	0,
+													64,	96,	96,	0,
+													160,	216,	248,	0,
+													160,	216,	248,	0,
+													224,	248,	248,	0,
+													56,	96,	128,	0,
+													0,	16,	16,	0
 												};
 
-		vars.offsetBossStart = 0x2F5BC;
+		vars.offsetMorden =	0x37FF0;
+
+
+
+		//The wall of Rugname we smash into, mingled with the fade
+		//Starts at pixel ( 152 , 27 )
+		vars.colorsRugname = new byte[]			{
+													112, 112, 104, 0,
+													0, 0, 0, 0,
+													88, 88, 80, 0,
+													0, 0, 0, 0,
+													72, 72, 72, 0,
+													0, 0, 0, 0,
+													72, 72, 72, 0,
+													0, 0, 0, 0,
+													88, 88, 80, 0,
+													0, 0, 0, 0
+												};
+
+		vars.offsetRugname = 0x82A0;
+
+
+
+		//The foreground after defeating Fake Root, mingled with the second dither pattern of the screen fade
+		//The screen shakes at 60Hz here, so we need two values to be sure
+		//Starts at pixel ( 286 , 173 )
+		vars.colorsFakeRoot1 = new byte[]		{
+													0,		0,		0,		0,
+													64,		104,	136,	0,
+													48,		80,		112,	0,
+													48,		80,		112,	0,
+													0,		0,		0,		0,
+													64,		104,	136,	0,
+													64,		104,	136,	0,
+													88,		136,	168,	0,
+													0,		0,		0,		0,
+													88,		136,	168,	0
+												};
+
+		vars.colorsFakeRoot2 = new byte[]		{
+													0,		0,		0,		0,
+													64,		104,	136,	0,
+													88,		136,	168,	0,
+													64,		104,	136,	0,
+													0,		0,		0,		0,
+													88,		136,	168,	0,
+													88,		136,	168,	0,
+													88,		136,	168,	0,
+													0,		0,		0,		0,
+													64,		104,	136,	0
+												};
+
+		vars.offsetFakeRoot = 0x33A38;
+
+
+
+		//The rim of Rugname when we exit it just before fighting True Root
+		//Starts at pixel ( 36, 0 )
+		vars.colorsBossStart = new byte[]		{
+													88,		104,	104,	0,
+													248,	248,	248,	0,
+													24,		40,		40,		0,
+													24,		40,		40,		0,
+													24,		40,		40,		0,
+													64,		80,		80,		0,
+													40,		56,		56,		0,
+													40,		56,		56,		0,
+													24,		40,		40,		0,
+													128,	144,	144,	0
+												};
+
+		vars.offsetBossStart = 0x90;
+		
+		
+		
+		//The background black when True Root dies
+		//Starts at pixel ( 36, 0 ) // ( 165 , 0 ) // ( 274 , 181 )
+		vars.colorsTrueRoot = new byte[]		{
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0,
+													0,		0,		0,		0
+												};
+
+		vars.offsetTrueRoot1 = 0x90;
+
+		vars.offsetTrueRoot2 = 0x294;
+
+		vars.offsetTrueRoot3 = 0x38D48;
 
 	}
 
 
 
-	else //if(game.ProcessName.Equals("mslug2"))
+	else //if(game.ProcessName.Equals("mslug3"))
 	{
 		
-		//The footsteps in the sand when the character hits the ground at the start of mission 1
-		//Starts at pixel ( 104 , 147 )
+		//The water splash when the character hits the water at the start of mission 1
+		//Starts at pixel ( 65 , 180 )
 		vars.colorsRunStart = new byte[]		{
-													132,	235,	255,	255,
-													99,		195,	247,	255,
-													66,		146,	198,	255,
-													82,		170,	222,	255,
-													99,		195,	247,	255,
-													99,		195,	247,	255,
-													115,	219,	255,	255,
-													115,	219,	255,	255,
-													115,	219,	255,	255,
-													132,	235,	255,	255
+													214,	251,	247,	255,
+													173,	235,	206,	255,
+													165,	211,	173,	255,
+													214,	251,	247,	255,
+													214,	251,	247,	255,
+													165,	211,	173,	255,
+													173,	235,	206,	255,
+													165,	211,	173,	255,
+													173,	235,	206,	255,
+													214,	251,	247,	255
 												};
 		
-		vars.offsetRunStart = 0x499CF;
+		vars.offsetRunStart = 0x5A133;
 	
 		
 
@@ -330,9 +419,9 @@ init
 												};
 
 		vars.offsetExclamationMark = 0x38C0B;
-
 		
-
+		
+		
 		//The grey of the UI
 		//Starts at pixel ( 80 , 8 )
 		vars.colorsUI = new byte[]				{
@@ -352,22 +441,116 @@ init
 		
 		
 		
-		//The rim of Rugname when it hits the ground after phase 1
-		//Starts at pixel ( 159 , 159 )
-		vars.colorsBossStart = new byte[]		{
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255,
-													90,		105,	107,	255
+		//The nose of Morden when he hits the ground after falling from the Hi-Do
+		//Starts at pixel ( 188 , 188 )
+		vars.colorsMorden = new byte[]			{
+													24,		48,		49,		255,
+													24,		48,		49,		255,
+													115,	146,	148,	255,
+													115,	146,	148,	255,
+													66,		97,		99,		255,
+													165,	219,	255,	255,
+													165,	219,	255,	255,
+													231,	251,	255,	255,
+													57,		97,		132,	255,
+													0,		16,		16,		255
 												};
 		
-		vars.offsetBossStart = 0x4FAAB;
+		vars.offsetMorden =	0x5E31F;
+
+
+
+		//The wall of Rugname we smash into, mingled with the fade
+		//Starts at pixel ( 152 , 27 )
+		vars.colorsRugname = new byte[]			{
+													115, 113, 107, 255,
+													0, 0, 0, 255,
+													90, 89, 82, 255,
+													0, 0, 0, 255,
+													74, 73, 74, 255,
+													0, 0, 0, 255,
+													74, 73, 74, 255,
+													0, 0, 0, 255,
+													90, 89, 82, 255,
+													0, 0, 0, 255
+												};
+		
+		vars.offsetRugname = 0xDA8F;
+		
+		
+		
+		//The foreground after defeating Fake Root, mingled with the second dither pattern of the screen fade
+		//The screen shakes at 60Hz here, so we need two values to be sure
+		//Starts at pixel ( 286 , 173 )
+		vars.colorsFakeRoot1 = new byte[]		{
+													0,		0,		0,		255,
+													66,		105,	140,	255,
+													49,		81,		115,	255,
+													49,		81,		115,	255,
+													0,		0,		0,		255,
+													66,		105,	140,	255,
+													66,		105,	140,	255,
+													90,		138,	173,	255,
+													0,		0,		0,		255,
+													90,		138,	173,	255
+												};
+
+		vars.colorsFakeRoot2 = new byte[]		{
+													0,		0,		0,		255,
+													66,		105,	140,	255,
+													90,		138,	173,	255,
+													66,		105,	140,	255,
+													0,		0,		0,		255,
+													90,		138,	173,	255,
+													90,		138,	173,	255,
+													90,		138,	173,	255,
+													0,		0,		0,		255,
+													66,		105,	140,	255
+												};
+		
+		vars.offsetFakeRoot = 0x56CA7;
+		
+		
+		
+		//The rim of Rugname when we exit it just before fighting True Root
+		//Starts at pixel ( 36, 0 )
+		vars.colorsBossStart = new byte[]		{
+													90,		105,	107,	255,
+													255,	251,	255,	255,
+													24,		40,		41,		255,
+													24,		40,		41,		255,
+													24,		40,		41,		255,
+													66,		81,		82,		255,
+													41,		56,		57,		255,
+													41,		56,		57,		255,
+													24,		40,		41,		255,
+													132,	146,	148,	255
+												};
+
+		vars.offsetBossStart = 0xBF;
+		
+		
+		
+		//The background black when True Root dies
+		//Starts at pixel ( 36, 0 ) // ( 165 , 0 ) // ( 274 , 181 )
+		vars.colorsTrueRoot = new byte[]		{
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255,
+													16,		16,		16,		255
+												};
+		
+		vars.offsetTrueRoot1 = 0xBF;
+
+		vars.offsetTrueRoot2 = 0x2C3;
+
+		vars.offsetTrueRoot3 = 0x5AC77;
 		
 	}
 }
@@ -385,11 +568,7 @@ exit
 	vars.watcherScreen = new MemoryWatcher<short>(IntPtr.Zero);
 
 	vars.watcherScreen.FailAction = MemoryWatcher.ReadFailAction.SetZeroOrNull;
-
-	vars.pointerBossHealth = IntPtr.Zero;
-
-	vars.watcherBossHealth = new MemoryWatcher<short>(IntPtr.Zero);
-
+	
 }
 
 
@@ -402,7 +581,7 @@ update
 	//Increase local tickCount
 	vars.localTickCount = vars.localTickCount + 1;
 
-
+	
 
 	//Try to find the screen
 	//For Kawaks, follow the pointer path
@@ -422,7 +601,7 @@ update
 		{
 			
 			//Notify
-			print("[MS2 AutoSplitter] Screen region changed");
+			print("[MS3 Splitter] Screen region changed");
 
 
 
@@ -430,7 +609,7 @@ update
 			vars.pointerScreen = IntPtr.Zero;
 
 		}
-		
+
 		
 		
 		//If the screen pointer is void
@@ -444,21 +623,21 @@ update
 			{
 				
 				//Notify
-				print("[MS2 AutoSplitter] Scanning for screen");
+				print("[MS3 Splitter] Scanning for screen");
 
 
 
 				//Scan for the screen
 				vars.pointerScreen = vars.FindArray(game, vars.scannerTargetScreen);
-			
-			
-		
+				
+				
+				
 				//If the scan was successful
 				if (vars.pointerScreen != IntPtr.Zero)
 				{
 					
 					//Notify
-					print("[MS2 AutoSplitter] Found screen");
+					print("[MS3 Splitter] Found screen");
 
 
 
@@ -487,13 +666,43 @@ update
 		//Debug print an array
 		//print("Rugname");
 		
-		//vars.PrintArray(vars.ReadArray(game, vars.offsetStart));
+		//if (vars.localTickCount % 20 == 0) vars.PrintArray(vars.ReadArray(game, vars.offsetRunStart));
+		
+		//Debug Print
+		/*
+		byte[] bytesUp = vars.ReadArray(game, vars.offsetExclamationMarkUp);
+		byte[] bytes = vars.ReadArray(game, vars.offsetExclamationMark);
+		byte[] bytesDown = vars.ReadArray(game, vars.offsetExclamationMarkDown);
+
+		var strUp = new System.Text.StringBuilder();
+		var str = new System.Text.StringBuilder();
+		var strDown = new System.Text.StringBuilder();
+
+		for (int i = 0; i<bytes.Length; i++)
+		{
+			strUp.Append(bytesUp[i].ToString());
+			str.Append(bytes[i].ToString());
+			strDown.Append(bytesDown[i].ToString());
+
+			strUp.Append(" ");
+			str.Append(" ");
+			strDown.Append(" ");
+
+		}
+
+		print("Splash Up      " + strUp.ToString());
+		print("Splash         " + str.ToString());
+		print("Splash Down    " + strDown.ToString());
+
+
+
+		//Check if we should start/restart the timer
+		vars.restart = vars.MatchArray(bytes, vars.colorsExclamationMark, 0);
+		*/
 
 		
-	
 		//Check if we should start/restart the timer
-		vars.restart = vars.MatchArray(vars.ReadArray(game, vars.offsetRunStart), vars.colorsRunStart);
-		
+		vars.restart = vars.MatchArray(vars.ReadArray(game, vars.offsetRunStart), vars.colorsRunStart, 4);
 	}
 }
 
@@ -506,17 +715,13 @@ reset
 	
 	if (vars.restart)
 	{
+		print("[MS3 Splitter] Restarting");
+
 		vars.splitCounter = 0;
 		
 		vars.prevSplitTime = -1;
 		
 		vars.prevScanTimeScreen = -1;
-
-		vars.prevScanTimeBossHealth = -1;
-		
-		vars.pointerBossHealth = IntPtr.Zero;
-
-		vars.watcherBossHealth = new MemoryWatcher<short>(IntPtr.Zero);
 
 		return true;
 	}
@@ -545,7 +750,7 @@ split
 	//Check time since last split, don't split if we already split in the last 20 seconds
 	var timeSinceLastSplit = Environment.TickCount - vars.prevSplitTime;
 	
-	if (vars.prevSplitTime != -1 && timeSinceLastSplit< 20000)
+	if (vars.prevSplitTime != -1 && timeSinceLastSplit < 20000)
 	{
 		return false;
 	}
@@ -555,11 +760,13 @@ split
 	//If we dont know where the screen is, stop
 	if (vars.pointerScreen == IntPtr.Zero)
 	{
+		print("[MS3 Splitter] Aborting");
+
 		return false;
 	}
-
-
-
+	
+	
+	
 	//Debug Print
 	if (vars.localTickCount % 10 == 0)
 	{
@@ -577,10 +784,10 @@ split
 		print(vars.splitCounter.ToString() + " - " + str.ToString());
 	}
 
+	
 
-
-	//Missions 1, 2, 3, 4 and 5
-	if (vars.splitCounter < 10)
+	//Missions 1, 2, 3 and 4
+	if (vars.splitCounter < 8)
 	{
 		
 		if (vars.splitCounter % 2 == 0)
@@ -589,9 +796,11 @@ split
 			//Check for the exclamation mark from the "Mission Complete !" text
 			byte[] pixels = vars.ReadArray(game, vars.offsetExclamationMark);
 			
-			if (vars.MatchArray(pixels, vars.colorsExclamationMark))
+			if (vars.MatchArray(pixels, vars.colorsExclamationMark, 0))
 			{
 				vars.splitCounter++;
+
+				print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
 			}
 		}
 
@@ -601,10 +810,12 @@ split
 			//Split when the UI disappears after we've seen the exclamation mark
 			byte[] pixels = vars.ReadArray(game, vars.offsetUI);
 			
-			if (!vars.MatchArray(pixels, vars.colorsUI))
+			if (!vars.MatchArray(pixels, vars.colorsUI, 0))
 			{
 				vars.splitCounter++;
 			
+				print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
+				
 				vars.prevSplitTime = Environment.TickCount;
 			
 				return true;
@@ -613,123 +824,116 @@ split
 	}
 
 
-	//Knowing when we get to the last phase of the last boss
-	else if (vars.splitCounter == 10)
+
+	//For Morden
+	else if (vars.splitCounter == 8)
 	{
 		
-		//When Rugname hits the ground
-		byte[] pixels = vars.ReadArray(game, vars.offsetBossStart);
+		//Split when Morden's face hits the ground
+		byte[] pixels = vars.ReadArray(game, vars.offsetMorden);
+
+		if (vars.MatchArray(pixels, vars.colorsMorden, 0))
+		{
+			vars.splitCounter++;
+			
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
+
+			vars.prevSplitTime = Environment.TickCount;
+			
+			return true;
+		}
+	}
+
+
+
+	//For Rugname
+	else if (vars.splitCounter == 9)
+	{
+		
+		//Split when we hit the inner wall of Rugname
+		byte[] pixels = vars.ReadArray(game, vars.offsetRugname);
+		
+		if (vars.MatchArray(pixels, vars.colorsRugname, 0))
+		{
+			vars.splitCounter++;
+			
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
+
+			vars.prevSplitTime = Environment.TickCount;
+			
+			return true;
+		}
+	}
+
+
+
+	//For Fake Rootmars
+	else if (vars.splitCounter == 10)
+	{
+
+		//Split when the fadeout occurs after Fake Root
+		//The screen is shaking at that point, so there seems to be 2 possibilities
+		byte[] pixels = vars.ReadArray(game, vars.offsetFakeRoot);
+		
+		if (vars.MatchArray(pixels, vars.colorsFakeRoot1, 0) || vars.MatchArray(pixels, vars.colorsFakeRoot2, 0))
+		{
+			vars.splitCounter++;
+			
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
+
+			vars.prevSplitTime = Environment.TickCount;
+			
+			return true;
+		}
+	}
+
 	
-		if (vars.MatchArray(pixels, vars.colorsBossStart))
+
+	//Knowing when we get to the last boss
+	else if (vars.splitCounter == 11)
+	{
+		
+		//When we exit Rugname
+		byte[] pixels = vars.ReadArray(game, vars.offsetBossStart);
+		
+		if (vars.MatchArray(pixels, vars.colorsBossStart, 0))
 		{
 			
 			//Notify
-			print("[MS2 AutoSplitter] Last fight starting");
+			print("[MS3 Splitter] Last fight starting");
 
 
 
-			//Clear the pointer to the boss's health
-			vars.pointerBossHealth = IntPtr.Zero;
-			
-			
-			
-			//Move to next phase, prevent splitting/scanning for 20 seconds (but don't actually split)
+			//Move to next phase, prevent splitting for 20 seconds (but don't actually split)
 			vars.splitCounter++;
 			
+			print("[MS3 Splitter] Advancing to state " + vars.splitCounter.ToString());
+
 			vars.prevSplitTime = Environment.TickCount;
 			
 		}
 	}
 
-
-
-	//Finding the boss's health variable
-	else if (vars.splitCounter == 11)
-	{
-		
-		//Check time since last scan, don't scan if we already scanned in the last 8 seconds
-		//This should end up triggering about 2 or 3 times, which should be more than enough to find his health before the end of the fight
-		var timeSinceLastScan = Environment.TickCount - vars.prevScanTimeBossHealth;
-		
-		if (timeSinceLastScan > 8000)
-		{
-			
-			//Notify
-			print("[MS2 AutoSplitter] Scanning for health");
-
-
-
-			//Scan
-			vars.pointerBossHealth = vars.FindArray(game, vars.scannerTargetBossHealth);
-			
-			
-		
-			//If the scan was successful
-			if (vars.pointerBossHealth != IntPtr.Zero)
-			{
-				
-				print("[MS2 AutoSplitter] Found health");
-
-				//Create a new memory watcher
-				vars.watcherBossHealth = new MemoryWatcher<short>(vars.pointerBossHealth);
-
-				vars.watcherBossHealth.Update(game);
-				
-				
-				
-				//Move to next phase
-				vars.splitCounter++;
-
-			}
-			
-			
-			
-			//Write down scan time
-			vars.prevScanTimeBossHealth = Environment.TickCount;
 	
-		}
-	}
 
-
-
-	//Check that the boss's health has been reset above 0
+	//For True Rootmars
 	else if (vars.splitCounter == 12)
 	{
 		
-		vars.watcherBossHealth.Update(game);
+		//Split when the background becomes completely black
+		//We need to check multiple arrays, because the player or the boss's attacks might be obscuring some of them
+		byte[] pixels1 = vars.ReadArray(game, vars.offsetTrueRoot1);
+
+		byte[] pixels2 = vars.ReadArray(game, vars.offsetTrueRoot2);
+
+		byte[] pixels3 = vars.ReadArray(game, vars.offsetTrueRoot3);
 		
-		if (vars.watcherBossHealth.Current > 0)
+		if (vars.MatchArray(pixels1, vars.colorsTrueRoot, 0) || vars.MatchArray(pixels2, vars.colorsTrueRoot, 0) || vars.MatchArray(pixels3, vars.colorsTrueRoot, 0))
 		{
+			print(Environment.TickCount.ToString() + " [MS3 AutoSplitter] Run end");
+
+			vars.splitCounter++;
 			
-			//Notify
-			print("[MS2 AutoSplitter] Monitoring health");
-
-
-
-			//Go to next phase
-			vars.splitCounter++;
-
-		}
-	}
-
-
-
-	//Check that the boss's health has been reduced to 0
-	else if (vars.splitCounter == 13)
-	{
-
-		//Update watcher
-		vars.watcherBossHealth.Update(game);
-		
-		
-		
-		//Split when the boss's health reaches 0
-		if (vars.watcherBossHealth.Current == 0)
-		{
-			print("[MS2 AutoSplitter] Run end");
-
-			vars.splitCounter++;
-
 			vars.prevSplitTime = Environment.TickCount;
 			
 			return true;
