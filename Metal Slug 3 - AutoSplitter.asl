@@ -11,6 +11,11 @@ state("WinKawaks")
 	int pointerScreen : 0x0046B270;
 }
 
+state("fcadefbneo")
+{
+	int pointerScreen : 0x02CC2280, 0x4, 0x4, 0x14;
+}
+
 
 
 
@@ -132,6 +137,37 @@ startup
 
 	
 
+	//Names for splits, purely for debug
+	vars.splitNames = new string[] {	
+										"Idle",
+										"Mission 1 Beach",
+										"Mission 1 Tanker",
+										"Mission 1 Huge Hermit",
+										"Mission 2",
+										"Mission 3 Cutscene",
+										"Mission 3 Water",
+										"Mission 3 Oil Rig",
+										"Mission 3 Jupiter King",
+										"Mission 4 Desert",
+										"Mission 4 Pyramid",
+										"Mission 4 Sol Dae Rokker",
+										"Mission 5 Plane Platform",
+										"Mission 5 Allen",
+										"Mission 5 Morden",
+										"Mission 5 Rugname",
+										"Mission 5 Galaga",
+										"Mission 5 Pillar Room",
+										"Mission 5 Tortue Room",
+										"Mission 5 Kamikaze Room",
+										"Mission 5 FakeRoot",
+										"Mission 5 Slug Room",
+										"Mission 5 Cloning Room",
+										"Mission 5 Red Room",
+										"Mission 5 TrueRoot"
+									};
+
+
+
 	//Should we reset and restart the timer
 	vars.restart = false;
 
@@ -159,12 +195,14 @@ startup
 
 	
 
-	//Is the UI present on screen now? Was it last frame?
+	//Is the UI present on screen now? Was it last frame? How many frames was it on?
 	vars.UIOnScreenCurrent = false;
 
 	vars.UIOnScreenOld = false;
 
-	
+	vars.UIOnScreenCount = 0;
+
+
 
 	//The split/state we are currently on
 	vars.splitCounter = 0;
@@ -280,9 +318,9 @@ init
 		
 		
 		
-		//The background black when True Root dies
+		//The background black when True Root dies (3 frames just to be sure)
 		//Starts at pixel ( 36, 0 ) // ( 165 , 0 ) // ( 274 , 181 )
-		vars.colorsTrueRoot = new byte[]		{
+		vars.colorsTrueRoot1 = new byte[]		{
 													0,   0,   0,   0,
 													0,   0,   0,   0,
 													0,   0,   0,   0,
@@ -295,6 +333,32 @@ init
 													0,   0,   0,   0
 												};
 
+		vars.colorsTrueRoot2 = new byte[]		{
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0
+												};
+
+		vars.colorsTrueRoot3 = new byte[]		{
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0
+												};
+		
 		vars.offsetTrueRoot1 = 0x90;
 
 		vars.offsetTrueRoot2 = 0x294;
@@ -315,6 +379,191 @@ init
 													248, 248, 248, 0,
 													248, 248, 248, 0,
 													248, 248, 248, 0
+												};
+	}
+
+
+
+	else if (game.ProcessName.Equals("fcadefbneo"))
+	{
+		
+		//The water splash when the character hits the water at the start of mission 1
+		//Starts at pixel ( 65 , 180 )
+		vars.colorsRunStart = new byte[]		{
+													214, 255, 247, 0,
+													214, 255, 247, 0,
+													173, 239, 206, 0,
+													173, 239, 206, 0,
+													165, 214, 173, 0,
+													165, 214, 173, 0,
+													214, 255, 247, 0,
+													214, 255, 247, 0,
+													214, 255, 247, 0,
+													214, 255, 247, 0,
+													165, 214, 173, 0,
+													165, 214, 173, 0,
+													173, 239, 206, 0,
+													173, 239, 206, 0,
+													165, 214, 173, 0
+												};
+		
+		vars.offsetRunStart = 0xD5E08;
+		
+		
+		
+		//The grey lining of the UI
+		//Starts at pixel ( 80 , 8 )
+		vars.colorsUI = new byte[]				{
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0,
+													189, 173, 165, 0
+												};
+
+		vars.offsetUI = 0x9A80;
+		
+		
+		
+		//The "CONTINUE" text
+		//Starts at pixel ( 16 , 20 )
+		vars.colorsContinue = new byte[]		{
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													255, 181, 189, 0,
+													255, 181, 189, 0,
+													255, 156, 165, 0,
+													255, 156, 165, 0,
+													255, 181, 189, 0,
+													255, 181, 189, 0,
+													255, 156, 165, 0,
+													255, 156, 165, 0,
+													255, 181, 189, 0,
+													255, 181, 189, 0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0
+												};
+		
+		vars.offsetContinue = 0x17C80;
+		
+		
+		
+		//The digit from the character selection
+		//Starts at pixel ( 16 , 12 )
+		vars.colorsDigit = new byte[]		{
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													0,   0,   0,   0
+												};
+		
+		vars.offsetDigit = 0xE480;
+		
+		
+		
+		//The background black when True Root dies
+		//Starts at pixel ( 36, 0 ) // ( 165 , 0 ) // ( 274 , 181 )
+		vars.colorsTrueRoot1 = new byte[]		{
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0,
+													0,   0,   0,   0
+												};
+
+		vars.colorsTrueRoot2 = new byte[]		{
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0,
+													8,   8,   8,   0
+												};
+
+		vars.colorsTrueRoot3 = new byte[]		{
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0,
+													16,  16,  16,  0
+												};
+
+		vars.offsetTrueRoot1 = 0x120;
+
+		vars.offsetTrueRoot2 = 0x528;
+
+		vars.offsetTrueRoot3 = 0xD7790;
+		
+		
+
+		//Pure white
+		vars.colorsWhite = new byte[]		{
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0
 												};
 	}
 
@@ -399,7 +648,33 @@ init
 		
 		//The background black when True Root dies
 		//Starts at pixel ( 36, 0 ) // ( 165 , 0 ) // ( 274 , 181 )
-		vars.colorsTrueRoot = new byte[]		{
+		vars.colorsTrueRoot1 = new byte[]		{
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255,
+													0,   0,   0,   255
+												};
+		
+		vars.colorsTrueRoot2 = new byte[]		{
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255,
+													8,   8,   8,   255
+												};
+		
+		vars.colorsTrueRoot3 = new byte[]		{
 													16,  16,  16,  255,
 													16,  16,  16,  255,
 													16,  16,  16,  255,
@@ -465,8 +740,8 @@ update
 	
 
 	//Try to find the screen
-	//For Kawaks, follow the pointer path
-	if(game.ProcessName.Equals("WinKawaks"))
+	//For Kawaks and FightCade, follow the pointer path
+	if(game.ProcessName.Equals("WinKawaks") || game.ProcessName.Equals("fcadefbneo"))
 	{
 		vars.pointerScreen = new IntPtr(current.pointerScreen);
 	}
@@ -475,13 +750,12 @@ update
 	else
 	{
 
-		//If the screen region changed place in memory
+		//If the screen region changed place in memory, void the pointer
 		vars.watcherScreen.Update(game);
 		
 		if (vars.watcherScreen.Changed)
 		{
 			
-			//Void the pointer
 			vars.pointerScreen = IntPtr.Zero;
 
 		}
@@ -545,11 +819,9 @@ update
 		{
 			print("[MS3 AutoSplitter] Debug " + vars.splitCounter.ToString());
 
-			vars.PrintArray(vars.ReadArray(game, vars.offsetDigit));
+			vars.PrintArray(vars.ReadArray(game, vars.offsetContinue));
 		}
 		*/
-		
-		
 		
 		//Check if we should start/restart the timer
 		vars.restart = vars.MatchArray(vars.ReadArray(game, vars.offsetRunStart), vars.colorsRunStart, 32);
@@ -566,9 +838,13 @@ reset
 	
 	if (vars.restart)
 	{
-		vars.splitCounter = 0;
+		vars.UIOnScreenCurrent = false;
+
+		vars.UIOnScreenOld = false;
+
+		vars.UIOnScreenCount = 0;
 		
-		vars.prevSplitTime = -1;
+		vars.splitCounter = 0;
 		
 		vars.prevScanTimeScreen = -1;
 
@@ -585,12 +861,16 @@ start
 	
 	if (vars.restart)
 	{
+		vars.UIOnScreenCurrent = false;
+
+		vars.UIOnScreenOld = false;
+
+		vars.UIOnScreenCount = 0;
+		
 		vars.splitCounter = 0;
 		
-		vars.prevSplitTime = -1;
-		
 		vars.prevScanTimeScreen = -1;
-
+		
 		return true;
 	}
 }
@@ -625,13 +905,20 @@ split
 	)
 	{
 		vars.UIOnScreenCurrent = true;
+
+		vars.UIOnScreenCount++;
+
+		if (vars.UIOnScreenCount == refreshRate)
+		{
+			vars.splitCounter++;
+		
+			print("[MS3 AutoSplitter] Aquired:  " + vars.splitNames[vars.splitCounter]);
+		}
 	}
 
 	else if
 	(
-		vars.MatchArray(pixelsUI, vars.colorsWhite, 0)			||
-		vars.MatchArray(pixelsContinue, vars.colorsWhite, 0)	||
-		vars.MatchArray(pixelsDigit, vars.colorsWhite, 0)
+		vars.MatchArray(pixelsUI, vars.colorsWhite, 0)
 	)
 	{
 		vars.UIOnScreenCurrent = vars.UIOnScreenOld;
@@ -644,32 +931,32 @@ split
 
 
 
-	//Check if the UI just disappeared
-	bool UIDisappeared = vars.UIOnScreenOld && !vars.UIOnScreenCurrent;
+	//Check if the UI just disappeared after being on screen for more than one second
+	bool UIDisappeared = !vars.UIOnScreenCurrent && vars.UIOnScreenOld && vars.UIOnScreenCount >= refreshRate;
 	
 	
 	
 	//Update state of last frame
 	vars.UIOnScreenOld = vars.UIOnScreenCurrent;
 	
+	if (!vars.UIOnScreenCurrent) vars.UIOnScreenCount = 0;
 
+	
 
 	//If the UI just disappeared, update split counter and maybe split
 	if (UIDisappeared)
 	{
-		vars.splitCounter++;
-		
-		print("[MS3 AutoSplitter] Advancing to " + vars.splitCounter);
+		print("[MS3 AutoSplitter] Released: " + vars.splitNames[vars.splitCounter]);
 		
 		if
 		(
 			vars.splitCounter == 3	||
-			vars.splitCounter == 5	||
-			vars.splitCounter == 10	||
-			vars.splitCounter == 13	||
-			vars.splitCounter == 17	||
-			vars.splitCounter == 20	||
-			vars.splitCounter == 25
+			vars.splitCounter == 4	||
+			vars.splitCounter == 8	||
+			vars.splitCounter == 11	||
+			vars.splitCounter == 14	||
+			vars.splitCounter == 16	||
+			vars.splitCounter == 20
 		)
 		{
 			return true;
@@ -679,7 +966,7 @@ split
 
 	
 	//For True Rootmars
-	if (vars.splitCounter >= 31)
+	if (vars.splitCounter >= 24)
 	{
 		
 		//Split when the background becomes completely black
@@ -689,12 +976,18 @@ split
 		byte[] pixels2 = vars.ReadArray(game, vars.offsetTrueRoot2);
 
 		byte[] pixels3 = vars.ReadArray(game, vars.offsetTrueRoot3);
-		
+
 		if
 		(
-			vars.MatchArray(pixels1, vars.colorsTrueRoot, 0) ||
-			vars.MatchArray(pixels2, vars.colorsTrueRoot, 0) ||
-			vars.MatchArray(pixels3, vars.colorsTrueRoot, 0)
+			vars.MatchArray(pixels1, vars.colorsTrueRoot1, 0)	||
+			vars.MatchArray(pixels2, vars.colorsTrueRoot1, 0)	||
+			vars.MatchArray(pixels3, vars.colorsTrueRoot1, 0)	||
+			vars.MatchArray(pixels1, vars.colorsTrueRoot2, 0)	||
+			vars.MatchArray(pixels2, vars.colorsTrueRoot2, 0)	||
+			vars.MatchArray(pixels3, vars.colorsTrueRoot2, 0)	||
+			vars.MatchArray(pixels1, vars.colorsTrueRoot3, 0)	||
+			vars.MatchArray(pixels2, vars.colorsTrueRoot3, 0)	||
+			vars.MatchArray(pixels3, vars.colorsTrueRoot3, 0)
 		)
 		{
 			vars.splitCounter++;
