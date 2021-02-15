@@ -140,30 +140,22 @@ startup
 	//Names for splits, purely for debug
 	vars.splitNames = new string[] {	
 										"Idle",
-										"Mission 1 Beach",
-										"Mission 1 Tanker",
-										"Mission 1 Huge Hermit",
-										"Mission 2",
-										"Mission 3 Cutscene",
-										"Mission 3 Water",
-										"Mission 3 Oil Rig",
-										"Mission 3 Jupiter King",
-										"Mission 4 Desert",
-										"Mission 4 Pyramid",
-										"Mission 4 Sol Dae Rokker",
-										"Mission 5 Plane Platform",
-										"Mission 5 Allen",
-										"Mission 5 Morden",
-										"Mission 5 Rugname",
-										"Mission 5 Galaga",
-										"Mission 5 Pillar Room",
-										"Mission 5 Tortue Room",
-										"Mission 5 Kamikaze Room",
-										"Mission 5 FakeRoot",
-										"Mission 5 Slug Room",
-										"Mission 5 Cloning Room",
-										"Mission 5 Red Room",
-										"Mission 5 TrueRoot"
+										"Priming Mission 1",
+										"Spliting Mission 1",
+										"Priming Mission 2",
+										"Spliting Mission 2",
+										"Priming Mission 3",
+										"Spliting Mission 3",
+										"Priming Mission 4",
+										"Spliting Mission 4",
+										"Priming Mission 5 Morden",
+										"Spliting Mission 5 Morden",
+										"Priming Mission 5 Galaga",
+										"Spliting Mission 5 Galaga",
+										"Priming Mission 5 FakeRoot",
+										"Spliting Mission 5 FakeRoot",
+										"Priming Mission 5 TrueRoot",
+										"Spliting Mission 5 TrueRoot"
 									};
 
 
@@ -192,15 +184,6 @@ startup
 
 	//The time at which the last scan for the screen region happenend
 	vars.prevScanTimeScreen = -1;
-
-	
-
-	//Is the UI present on screen now? Was it last frame? How many frames was it on?
-	vars.UIOnScreenCurrent = false;
-
-	vars.UIOnScreenOld = false;
-
-	vars.UIOnScreenCount = 0;
 
 
 
@@ -282,39 +265,98 @@ init
 		
 		
 		
-		//The "CONTINUE" text
-		//Starts at pixel ( 16 , 20 )
-		vars.colorsContinue = new byte[]		{
-													0,   0,   0,   0,
-													248, 176, 184, 0,
-													248, 152, 160, 0,
-													248, 176, 184, 0,
-													248, 152, 160, 0,
-													248, 176, 184, 0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													248, 176, 184, 0
-												};
-		
-		vars.offsetContinue = 0x5F40;
-		
-		
-		
-		//The digit from the character selection
-		//Starts at pixel ( 16 , 12 )
-		vars.colorsDigit = new byte[]		{
+		//The exclamation mark in the Mission Complete !" text
+		//Starts at pixel ( 247 , 113 )
+		vars.colorsExclamationMark = new byte[] {
 													0,   0,   0,   0,
 													248, 248, 248, 0,
-													248, 248, 248, 0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													248, 248, 248, 0,
+													0,   0,   120, 0,
+													48,  208, 248, 0,
+													24,  144, 248, 0,
+													48,  208, 248, 0,
+													24,  144, 248, 0,
+													48,  208, 248, 0,
 													248, 248, 248, 0,
 													0,   0,   0,   0
 												};
 		
-		vars.offsetDigit = 0x3940;
+		vars.offsetExclamationMark = 0x21C9C;
+		
+		
+		
+		//The rocket we use to go to space
+		//Starts at pixel ( 158 , 92 )
+		vars.colorsRocket = new byte[]			{
+													32,  56,  72,  0,
+													16,  32,  72,  0,
+													16,  32,  72,  0,
+													24,  48,  96,  0,
+													16,  32,  72,  0,
+													16,  32,  72,  0,
+													24,  48,  96,  0,
+													80,  112, 128, 0,
+													80,  112, 128, 0,
+													80,  112, 128, 0
+												};
+		
+		vars.offsetRocket = 0x1B778;
+		
+		
+
+		//The inner wall of Rugname
+		//Starts at pixel ( 146 , 35 )
+		vars.colorsRugnameIn = new byte[]		{
+													88,  88,  80,  0,
+													112, 112, 104, 0,
+													136, 144, 144, 0,
+													112, 112, 104, 0,
+													88,  88,  80,  0,
+													112, 112, 104, 0,
+													112, 112, 104, 0,
+													88,  88,  80,  0,
+													112, 112, 104, 0,
+													136, 144, 144, 0
+												};
+		
+		vars.offsetRugnameIn = 0xA888;
+		
+
+
+		//The foreground in front of Fake Root
+		//Starts at pixel ( 285 , 173 )
+		vars.colorsFakeRoot = new byte[]		{
+													48,  80,  112, 0,
+													64,  104, 136, 0,
+													88,  136, 168, 0,
+													64,  104, 136, 0,
+													48,  80,  112, 0,
+													64,  104, 136, 0,
+													88,  136, 168, 0,
+													64,  104, 136, 0,
+													88,  136, 168, 0,
+													88,  136, 168, 0
+												};
+		
+		vars.offsetFakeRoot = 0x33A34;
+		
+		
+		
+		//The rim of Rugname when we exit
+		//Starts at pixel ( 36, 0 )
+		vars.colorsRugnameOut = new byte[]		{
+													88,  104, 104, 0,
+													248, 248, 248, 0,
+													24,  40,  40,  0,
+													24,  40,  40,  0,
+													24,  40,  40,  0,
+													64,  80,  80,  0,
+													40,  56,  56,  0,
+													40,  56,  56,  0,
+													24,  40,  40,  0,
+													128, 144, 144, 0
+												};
+		
+		vars.offsetRugnameOut = 0x90;
 		
 		
 		
@@ -435,51 +477,123 @@ init
 		
 		
 		
-		//The "CONTINUE" text
-		//Starts at pixel ( 16 , 20 )
-		vars.colorsContinue = new byte[]		{
+		//The exclamation mark in the Mission Complete !" text
+		//Starts at pixel ( 247 , 113 )
+		vars.colorsExclamationMark = new byte[] {
 													0,   0,   0,   0,
 													0,   0,   0,   0,
-													255, 181, 189, 0,
-													255, 181, 189, 0,
-													255, 156, 165, 0,
-													255, 156, 165, 0,
-													255, 181, 189, 0,
-													255, 181, 189, 0,
-													255, 156, 165, 0,
-													255, 156, 165, 0,
-													255, 181, 189, 0,
-													255, 181, 189, 0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													0,   0,   0,   0
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													0,   0,   123, 0,
+													0,   0,   123, 0,
+													49,  214, 255, 0,
+													49,  214, 255, 0,
+													24,  148, 255, 0,
+													24,  148, 255, 0,
+													49,  214, 255, 0,
+													49,  214, 255, 0,
+													24,  148, 255, 0,
+													24,  148, 255, 0,
+													49,  214, 255, 0
 												};
 		
-		vars.offsetContinue = 0x17C80;
+		vars.offsetExclamationMark = 0x86AB8;
 		
 		
 		
-		//The digit from the character selection
-		//Starts at pixel ( 16 , 12 )
-		vars.colorsDigit = new byte[]		{
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													255, 255, 255, 0,
-													255, 255, 255, 0,
-													255, 255, 255, 0,
-													255, 255, 255, 0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													0,   0,   0,   0,
-													255, 255, 255, 0,
-													255, 255, 255, 0,
-													255, 255, 255, 0,
-													255, 255, 255, 0,
-													0,   0,   0,   0
+		//The rocket we use to go to space
+		//Starts at pixel ( 158 , 92 )
+		vars.colorsRocket = new byte[]			{
+													33,  57,  74,  0,
+													33,  57,  74,  0,
+													16,  33,  74,  0,
+													16,  33,  74,  0,
+													16,  33,  74,  0,
+													16,  33,  74,  0,
+													24,  49,  99,  0,
+													24,  49,  99,  0,
+													16,  33,  74,  0,
+													16,  33,  74,  0,
+													16,  33,  74,  0,
+													16,  33,  74,  0,
+													24,  49,  99,  0,
+													24,  49,  99,  0,
+													82,  115, 132, 0
 												};
 		
-		vars.offsetDigit = 0xE480;
+		vars.offsetRocket = 0x6D8F0;
+		
+		
+		
+		//The inner wall of Rugname
+		//Starts at pixel ( 146 , 35 )
+		vars.colorsRugnameIn = new byte[]		{
+													90,  90,  82,  0,
+													90,  90,  82,  0,
+													115, 115, 107, 0,
+													115, 115, 107, 0,
+													140, 148, 148, 0,
+													140, 148, 148, 0,
+													115, 115, 107, 0,
+													115, 115, 107, 0,
+													90,  90,  82,  0,
+													90,  90,  82,  0,
+													115, 115, 107, 0,
+													115, 115, 107, 0,
+													115, 115, 107, 0,
+													115, 115, 107, 0,
+													90,  90,  82,  0
+												};
+		
+		vars.offsetRugnameIn = 0x29D90;
+		
+		
+		
+		//The foreground in front of Fake Root
+		//Starts at pixel ( 285 , 173 )
+		vars.colorsFakeRoot = new byte[]		{
+													49,  82,  115, 0,
+													49,  82,  115, 0,
+													66,  107, 140, 0,
+													66,  107, 140, 0,
+													90,  140, 173, 0,
+													90,  140, 173, 0,
+													66,  107, 140, 0,
+													66,  107, 140, 0,
+													49,  82,  115, 0,
+													49,  82,  115, 0,
+													66,  107, 140, 0,
+													66,  107, 140, 0,
+													90,  140, 173, 0,
+													90,  140, 173, 0,
+													66,  107, 140, 0
+												};
+		
+		vars.offsetFakeRoot = 0xCDFE8;
+		
+		
+		
+		//The rim of Rugname when we exit
+		//Starts at pixel ( 36, 0 )
+		vars.colorsRugnameOut = new byte[]		{
+													90,  107, 107, 0,
+													90,  107, 107, 0,
+													255, 255, 255, 0,
+													255, 255, 255, 0,
+													24,  41,  41,  0,
+													24,  41,  41,  0,
+													24,  41,  41,  0,
+													24,  41,  41,  0,
+													24,  41,  41,  0,
+													24,  41,  41,  0,
+													66,  82,  82,  0,
+													66,  82,  82,  0,
+													41,  57,  57,  0,
+													41,  57,  57,  0,
+													41,  57,  57,  0
+												};
+		
+		vars.offsetRugnameOut = 0x120;
 		
 		
 		
@@ -610,40 +724,99 @@ init
 		
 		
 		
-		//The "CONTINUE" text
-		//Starts at pixel ( 16 , 20 )
-		vars.colorsContinue = new byte[]		{
-													0,   0,   0,   255,
-													255, 178, 189, 255,
-													255, 154, 165, 255,
-													255, 178, 189, 255,
-													255, 154, 165, 255,
-													255, 178, 189, 255,
-													0,   0,   0,   255,
-													0,   0,   0,   255,
-													0,   0,   0,   255,
-													255, 178, 189, 255
-												};
-		
-		vars.offsetContinue = 0xA06F;
-		
-		
-		
-		//The digit from the character selection
-		//Starts at pixel ( 16 , 12 )
-		vars.colorsDigit = new byte[]			{
+		//The exclamation mark in the Mission Complete !" text
+		//Starts at pixel ( 247 , 113 )
+		vars.colorsExclamationMark = new byte[] {
 													0,   0,   0,   255,
 													255, 251, 255, 255,
-													255, 251, 255, 255,
-													0,   0,   0,   255,
-													0,   0,   0,   255,
-													255, 251, 255, 255,
+													0,   0,   123, 255,
+													49,  211, 255, 255,
+													24,  146, 255, 255,
+													49,  211, 255, 255,
+													24,  146, 255, 255,
+													49,  211, 255, 255,
 													255, 251, 255, 255,
 													0,   0,   0,   255
 												};
+
+		vars.offsetExclamationMark = 0x38C0B;
 		
-		vars.offsetDigit = 0x606F;
-	
+		
+		
+		//The rocket we use to go to space
+		//Starts at pixel ( 158 , 92 )
+		vars.colorsRocket = new byte[]			{
+													33,  56,  74,  255,
+													16,  32,  74,  255,
+													16,  32,  74,  255,
+													24,  48,  99,  255,
+													16,  32,  74,  255,
+													16,  32,  74,  255,
+													24,  48,  99,  255,
+													82,  113, 132, 255,
+													82,  113, 132, 255,
+													82,  113, 132, 255
+												};
+		
+		vars.offsetRocket = 0x2E2A7;
+		
+		
+		
+		//The inner wall of Rugname
+		//Starts at pixel ( 146 , 35 )
+		vars.colorsRugnameIn = new byte[]		{
+													90,  89,  82,  255,
+													115, 113, 107, 255,
+													140, 146, 148, 255,
+													115, 113, 107, 255,
+													90,  89,  82,  255,
+													115, 113, 107, 255,
+													115, 113, 107, 255,
+													90,  89,  82,  255,
+													115, 113, 107, 255,
+													140, 146, 148, 255
+												};
+		
+		vars.offsetRugnameIn = 0x11A77;
+		
+		
+		
+		//The foreground in front of Fake Root
+		//Starts at pixel ( 285 , 173 )
+		vars.colorsFakeRoot = new byte[]		{
+													49,  81,  115, 255,
+													66,  105, 140, 255,
+													90,  138, 173, 255,
+													66,  105, 140, 255,
+													49,  81,  115, 255,
+													66,  105, 140, 255,
+													90,  138, 173, 255,
+													66,  105, 140, 255,
+													90,  138, 173, 255,
+													90,  138, 173, 255
+												};
+		
+		vars.offsetFakeRoot = 0x56CA3;
+		
+		
+		
+		//The rim of Rugname when we exit
+		//Starts at pixel ( 36, 0 )
+		vars.colorsRugnameOut = new byte[]		{
+													90,  105, 107, 255,
+													255, 251, 255, 255,
+													24,  40,  41,  255,
+													24,  40,  41,  255,
+													24,  40,  41,  255,
+													66,  81,  82,  255,
+													41,  56,  57,  255,
+													41,  56,  57,  255,
+													24,  40,  41,  255,
+													132, 146, 148, 255
+												};
+		
+		vars.offsetRugnameOut = 0xBF;
+		
 		
 		
 		//The background black when True Root dies
@@ -819,7 +992,7 @@ update
 		{
 			print("[MS3 AutoSplitter] Debug " + vars.splitCounter.ToString());
 
-			vars.PrintArray(vars.ReadArray(game, vars.offsetContinue));
+			vars.PrintArray(vars.ReadArray(game, vars.offsetRugnameOut));
 		}
 		*/
 		
@@ -838,12 +1011,6 @@ reset
 	
 	if (vars.restart)
 	{
-		vars.UIOnScreenCurrent = false;
-
-		vars.UIOnScreenOld = false;
-
-		vars.UIOnScreenCount = 0;
-		
 		vars.splitCounter = 0;
 		
 		vars.prevScanTimeScreen = -1;
@@ -861,12 +1028,6 @@ start
 	
 	if (vars.restart)
 	{
-		vars.UIOnScreenCurrent = false;
-
-		vars.UIOnScreenOld = false;
-
-		vars.UIOnScreenCount = 0;
-		
 		vars.splitCounter = 0;
 		
 		vars.prevScanTimeScreen = -1;
@@ -882,7 +1043,7 @@ start
 split
 {
 	
-	//If we dont know where the screen is, stop
+	//If we dont know where the screen is, don't do anything
 	if (vars.pointerScreen == IntPtr.Zero)
 	{
 		return false;
@@ -890,83 +1051,115 @@ split
 
 
 
-	//Check if the UI is on screen or not
-	byte[] pixelsUI = vars.ReadArray(game, vars.offsetUI);
-	
-	byte[] pixelsContinue = vars.ReadArray(game, vars.offsetContinue);
-
-	byte[] pixelsDigit = vars.ReadArray(game, vars.offsetDigit);
-	
+	//Split when the UI disappears
 	if
 	(
-		vars.MatchArray(pixelsUI, vars.colorsUI, 0)				||
-		vars.MatchArray(pixelsContinue, vars.colorsContinue, 0)	||
-		vars.MatchArray(pixelsDigit, vars.colorsDigit, 0)
+			vars.splitCounter == 1
+		||	vars.splitCounter == 3
+		||	vars.splitCounter == 5
+		||	vars.splitCounter == 7
+		||	vars.splitCounter == 9
+		||	vars.splitCounter == 11
+		||	vars.splitCounter == 13
 	)
 	{
-		vars.UIOnScreenCurrent = true;
-
-		vars.UIOnScreenCount++;
-
-		if (vars.UIOnScreenCount == refreshRate)
+		byte[] pixels = vars.ReadArray(game, vars.offsetUI);
+	
+		if (!vars.MatchArray(pixels, vars.colorsUI, 0))
 		{
 			vars.splitCounter++;
-		
-			print("[MS3 AutoSplitter] Aquired:  " + vars.splitNames[vars.splitCounter]);
+			
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
+
+			return true;
 		}
 	}
 
+
+
+	//Prime when we see the exclamation mark
 	else if
 	(
-		vars.MatchArray(pixelsUI, vars.colorsWhite, 0)
+			vars.splitCounter == 0
+		||	vars.splitCounter == 2
+		||	vars.splitCounter == 4
+		||	vars.splitCounter == 6
 	)
 	{
-		vars.UIOnScreenCurrent = vars.UIOnScreenOld;
-	}
-
-	else
-	{
-		vars.UIOnScreenCurrent = false;
-	}
-
-
-
-	//Check if the UI just disappeared after being on screen for more than one second
-	bool UIDisappeared = !vars.UIOnScreenCurrent && vars.UIOnScreenOld && vars.UIOnScreenCount >= refreshRate;
+		byte[] pixels = vars.ReadArray(game, vars.offsetExclamationMark);
 	
-	
-	
-	//Update state of last frame
-	vars.UIOnScreenOld = vars.UIOnScreenCurrent;
-	
-	if (!vars.UIOnScreenCurrent) vars.UIOnScreenCount = 0;
-
-	
-
-	//If the UI just disappeared, update split counter and maybe split
-	if (UIDisappeared)
-	{
-		print("[MS3 AutoSplitter] Released: " + vars.splitNames[vars.splitCounter]);
-		
-		if
-		(
-			vars.splitCounter == 3	||
-			vars.splitCounter == 4	||
-			vars.splitCounter == 8	||
-			vars.splitCounter == 11	||
-			vars.splitCounter == 14	||
-			vars.splitCounter == 16	||
-			vars.splitCounter == 20
-		)
+		if (vars.MatchArray(pixels, vars.colorsExclamationMark, 0))
 		{
-			return true;
+			vars.splitCounter++;
+
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
+		}
+	}
+
+
+
+	//Prime when we see the rocket
+	else if (vars.splitCounter == 8)
+	{
+		byte[] pixels = vars.ReadArray(game, vars.offsetRocket);
+		
+		if (vars.MatchArray(pixels, vars.colorsRocket, 0))
+		{
+			vars.splitCounter++;
+
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
+		}
+	}
+
+
+	
+	//Prime when we see the inner wall of Rugname
+	else if (vars.splitCounter == 10)
+	{
+		byte[] pixels = vars.ReadArray(game, vars.offsetRugnameIn);
+		
+		if (vars.MatchArray(pixels, vars.colorsRugnameIn, 0))
+		{
+			vars.splitCounter++;
+
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
+		}
+	}
+
+
+	
+	//Prime when we see Fake Root
+	else if (vars.splitCounter == 12)
+	{
+		byte[] pixels = vars.ReadArray(game, vars.offsetFakeRoot);
+		
+		if (vars.MatchArray(pixels, vars.colorsFakeRoot, 0))
+		{
+			vars.splitCounter++;
+
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
+		}
+	}
+
+
+	
+	//Prime when we see the outer wall of Rugname
+	else if (vars.splitCounter == 14)
+	{
+		byte[] pixels = vars.ReadArray(game, vars.offsetRugnameOut);
+		
+		if (vars.MatchArray(pixels, vars.colorsRugnameOut, 0))
+		{
+			vars.splitCounter++;
+
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
 		}
 	}
 
 
 	
 	//For True Rootmars
-	if (vars.splitCounter >= 24)
+	if (vars.splitCounter >= 15)
 	{
 		
 		//Split when the background becomes completely black
@@ -976,7 +1169,7 @@ split
 		byte[] pixels2 = vars.ReadArray(game, vars.offsetTrueRoot2);
 
 		byte[] pixels3 = vars.ReadArray(game, vars.offsetTrueRoot3);
-
+		
 		if
 		(
 			vars.MatchArray(pixels1, vars.colorsTrueRoot1, 0)	||
@@ -991,6 +1184,8 @@ split
 		)
 		{
 			vars.splitCounter++;
+			
+			print("[MS3 AutoSplitter] " + vars.splitNames[vars.splitCounter]);
 			
 			return true;
 		}
