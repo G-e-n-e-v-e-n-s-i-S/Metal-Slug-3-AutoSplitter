@@ -908,7 +908,7 @@ update
 {
 	
 	//Increase local tickCount
-	vars.localTickCount = vars.localTickCount + 1;
+	vars.localTickCount++;
 
 	
 
