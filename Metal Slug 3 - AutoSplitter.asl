@@ -996,6 +996,8 @@ update
 		}
 		*/
 		
+
+
 		//Check if we should start/restart the timer
 		vars.restart = vars.MatchArray(vars.ReadArray(game, vars.offsetRunStart), vars.colorsRunStart, 32);
 
