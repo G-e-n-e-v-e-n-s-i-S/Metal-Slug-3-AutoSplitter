@@ -166,7 +166,7 @@ startup
 
 
 	//The time at which the last reset happenend
-	vars.prevResetTime = Environment.TickCount;
+	vars.prevRestartTime = Environment.TickCount;
 
 
 
@@ -1003,10 +1003,10 @@ update
 		
 		
 		
-		//Check time since last reset, don't reset if we already reset in the last half-second
-		var timeSinceLastReset = Environment.TickCount - vars.prevResetTime;
+		//Check time since last reset, don't reset if we already reset in the last second
+		var timeSinceLastReset = Environment.TickCount - vars.prevRestartTime;
 		
-		if (timeSinceLastReset < 500)
+		if (timeSinceLastReset < 1000)
 		{
 			vars.restart = false;
 		}
@@ -1030,7 +1030,7 @@ reset
 	{
 		vars.splitCounter = 0;
 		
-		vars.prevResetTime = Environment.TickCount;
+		vars.prevRestartTime = Environment.TickCount;
 
 		vars.prevScanTimeScreen = -1;
 
@@ -1049,7 +1049,7 @@ start
 	{
 		vars.splitCounter = 0;
 		
-		vars.prevResetTime = Environment.TickCount;
+		vars.prevRestartTime = Environment.TickCount;
 
 		vars.prevScanTimeScreen = -1;
 		
