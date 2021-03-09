@@ -1003,10 +1003,10 @@ update
 		
 		
 		
-		//Check time since last reset, don't reset if we already reset in the last second
+		//Check time since last reset, don't reset if we already reset in the last 0.8 second
 		var timeSinceLastReset = Environment.TickCount - vars.prevRestartTime;
 		
-		if (timeSinceLastReset < 1000)
+		if (timeSinceLastReset < 800)
 		{
 			vars.restart = false;
 		}
