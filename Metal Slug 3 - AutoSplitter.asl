@@ -327,22 +327,38 @@ init
 		
 
 
-		//The foreground in front of Fake Root
-		//Starts at pixel ( 285 , 173 )
-		vars.colorsFakeRoot = new byte[]		{
-													48,  80,  112, 0,
-													64,  104, 136, 0,
-													88,  136, 168, 0,
-													64,  104, 136, 0,
-													48,  80,  112, 0,
-													64,  104, 136, 0,
-													88,  136, 168, 0,
-													64,  104, 136, 0,
-													88,  136, 168, 0,
-													88,  136, 168, 0
+		//The shattered glass on Fake Root's brain when he is defeated
+		//Use two arrays because they can be obscured by debris
+		//Start at pixel ( 130 , 47 ) and ( 206 , 63 )
+		vars.colorsFakeRoot1 = new byte[]		{
+													128, 152, 168, 0,
+													96,  120, 136, 0,
+													200, 224, 248, 0,
+													200, 224, 248, 0,
+													200, 224, 248, 0,
+													8,   32,  48,  0,
+													8,   32,  48,  0,
+													168, 192, 216, 0,
+													200, 224, 248, 0,
+													128, 152, 168, 0
 												};
 		
-		vars.offsetFakeRoot = 0x33A34;
+		vars.colorsFakeRoot2 = new byte[]		{
+													128, 152, 176, 0,
+													168, 192, 216, 0,
+													8,   32,  48,  0,
+													8,   32,  48,  0,
+													168, 192, 216, 0,
+													168, 192, 216, 0,
+													72,  96,  120, 0,
+													0,   8,   24,  0,
+													0,   16,  32,  0,
+													32,  56,  72,  0
+												};
+		
+		vars.offsetFakeRoot1 = 0xE148;
+		
+		vars.offsetFakeRoot2 = 0x12E78;
 		
 		
 		
@@ -554,27 +570,48 @@ init
 		
 		
 		
-		//The foreground in front of Fake Root
-		//Starts at pixel ( 285 , 173 )
-		vars.colorsFakeRoot = new byte[]		{
-													49,  82,  115, 0,
-													49,  82,  115, 0,
-													66,  107, 140, 0,
-													66,  107, 140, 0,
-													90,  140, 173, 0,
-													90,  140, 173, 0,
-													66,  107, 140, 0,
-													66,  107, 140, 0,
-													49,  82,  115, 0,
-													49,  82,  115, 0,
-													66,  107, 140, 0,
-													66,  107, 140, 0,
-													90,  140, 173, 0,
-													90,  140, 173, 0,
-													66,  107, 140, 0
+		//The shattered glass on Fake Root's brain when he is defeated
+		//Use two arrays because they can be obscured by debris
+		//Start at pixel ( 130 , 47 ) and ( 206 , 63 )
+		vars.colorsFakeRoot1 = new byte[]		{
+													132, 156, 173, 0,
+													132, 156, 173, 0,
+													99,  123, 140, 0,
+													99,  123, 140, 0,
+													206, 231, 255, 0,
+													206, 231, 255, 0,
+													206, 231, 255, 0,
+													206, 231, 255, 0,
+													206, 231, 255, 0,
+													206, 231, 255, 0,
+													8,   33,  49,  0,
+													8,   33,  49,  0,
+													8,   33,  49,  0,
+													8,   33,  49,  0,
+													173, 198, 222, 0
 												};
 		
-		vars.offsetFakeRoot = 0xCDFE8;
+		vars.colorsFakeRoot2 = new byte[]		{
+													132, 156, 181, 0,
+													132, 156, 181, 0,
+													173, 198, 222, 0,
+													173, 198, 222, 0,
+													8,   33,  49,  0,
+													8,   33,  49,  0,
+													8,   33,  49,  0,
+													8,   33,  49,  0,
+													173, 198, 222, 0,
+													173, 198, 222, 0,
+													173, 198, 222, 0,
+													173, 198, 222, 0,
+													74,  99,  123, 0,
+													74,  99,  123, 0,
+													0,   8,   24,  0
+												};
+		
+		vars.offsetFakeRoot1 = 0x38110;
+		
+		vars.offsetFakeRoot2 = 0x4B370;
 		
 		
 		
@@ -786,22 +823,38 @@ init
 		
 		
 		
-		//The foreground in front of Fake Root
-		//Starts at pixel ( 285 , 173 )
-		vars.colorsFakeRoot = new byte[]		{
-													49,  81,  115, 255,
-													66,  105, 140, 255,
-													90,  138, 173, 255,
-													66,  105, 140, 255,
-													49,  81,  115, 255,
-													66,  105, 140, 255,
-													90,  138, 173, 255,
-													66,  105, 140, 255,
-													90,  138, 173, 255,
-													90,  138, 173, 255
+		//The shattered glass on Fake Root's brain when he is defeated
+		//Use two arrays because they can be obscured by debris
+		//Start at pixel ( 130 , 47 ) and ( 206 , 63 )
+		vars.colorsFakeRoot1 = new byte[]		{
+													132, 154, 173, 255,
+													99,  121, 140, 255,
+													206, 227, 255, 255,
+													206, 227, 255, 255,
+													206, 227, 255, 255,
+													8,   32,  49,  255,
+													8,   32,  49,  255,
+													173, 195, 222, 255,
+													206, 227, 255, 255,
+													132, 154, 173, 255
 												};
 		
-		vars.offsetFakeRoot = 0x56CA3;
+		vars.colorsFakeRoot2 = new byte[]		{
+													132, 154, 181, 255,
+													173, 195, 222, 255,
+													8,   32,  49,  255,
+													8,   32,  49,  255,
+													173, 195, 222, 255,
+													173, 195, 222, 255,
+													74,  97,  123, 255,
+													0,   8,   24,  255,
+													0,   16,  33,  255,
+													33,  56,  74,  255
+												};
+		
+		vars.offsetFakeRoot1 = 0x17A37;
+		
+		vars.offsetFakeRoot2 = 0x1FB67;
 		
 		
 		
@@ -997,16 +1050,16 @@ update
 		{
 			print("[MS3 AutoSplitter] Debug " + vars.splitCounter.ToString());
 
-			vars.PrintArray(vars.ReadArray(game, vars.offsetRugnameOut));
+			vars.PrintArray(vars.ReadArray(game, vars.offsetFakeRoot2));
 		}
 		*/
 		
 		
 		
-		//Check time since last reset, don't reset if we already reset in the last 0.8 second
+		//Check time since last reset, don't reset if we already reset in the last second
 		var timeSinceLastReset = Environment.TickCount - vars.prevRestartTime;
 		
-		if (timeSinceLastReset < 800)
+		if (timeSinceLastReset < 1000)
 		{
 			vars.restart = false;
 		}
@@ -1149,12 +1202,14 @@ split
 
 
 	
-	//Prime when we see Fake Root
+	//Prime when we see Fake Root destroyed
 	else if (vars.splitCounter == 12)
 	{
-		byte[] pixels = vars.ReadArray(game, vars.offsetFakeRoot);
+		byte[] pixels1 = vars.ReadArray(game, vars.offsetFakeRoot1);
+
+		byte[] pixels2 = vars.ReadArray(game, vars.offsetFakeRoot2);
 		
-		if (vars.MatchArray(pixels, vars.colorsFakeRoot, 0))
+		if (vars.MatchArray(pixels1, vars.colorsFakeRoot1, 0) || vars.MatchArray(pixels2, vars.colorsFakeRoot2, 0))
 		{
 			vars.splitCounter++;
 
