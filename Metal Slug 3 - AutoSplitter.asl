@@ -210,7 +210,7 @@ init
 {
 	
 	//Set refresh rate
-	refreshRate = 60;
+	refreshRate = 70;
 
 
 
