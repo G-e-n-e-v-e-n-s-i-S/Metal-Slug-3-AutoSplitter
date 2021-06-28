@@ -252,7 +252,8 @@ init
 		
 		
 		//The grey lining of the UI
-		//Starts at pixel ( 80 , 8 )
+		//Starts at pixel ( 80 , 8 ) for player 1
+		//Starts at pixel ( 176 , 8 ) for player 2
 		vars.colorsUI = new byte[]				{
 													184, 168, 160, 0,
 													184, 168, 160, 0,
@@ -268,7 +269,9 @@ init
 
 		vars.offsetUI = 0x2740;
 		
+		vars.offsetUI2 = 0x28C0;
 		
+
 		
 		//The exclamation mark in the Mission Complete !" text
 		//Starts at pixel ( 247 , 113 )
@@ -475,7 +478,8 @@ init
 		
 		
 		//The grey lining of the UI
-		//Starts at pixel ( 80 , 8 )
+		//Starts at pixel ( 80 , 8 ) for player 1
+		//Starts at pixel ( 176 , 8 ) for player 2
 		vars.colorsUI = new byte[]				{
 													189, 173, 165, 0,
 													189, 173, 165, 0,
@@ -496,7 +500,9 @@ init
 
 		vars.offsetUI = 0x9A80;
 		
+		vars.offsetUI2 = 0x9D80;
 		
+
 		
 		//The exclamation mark in the Mission Complete !" text
 		//Starts at pixel ( 247 , 113 )
@@ -748,7 +754,8 @@ init
 		
 		
 		//The grey of the UI
-		//Starts at pixel ( 80 , 8 )
+		//Starts at pixel ( 80 , 8 ) for player 1
+		//Starts at pixel ( 176 , 8 ) for player 2
 		vars.colorsUI = new byte[]				{
 													189, 170, 165, 255,
 													189, 170, 165, 255,
@@ -764,7 +771,9 @@ init
 		
 		vars.offsetUI = 0x416F;
 		
+		vars.offsetUI2 = 0x42EF;
 		
+
 		
 		//The exclamation mark in the Mission Complete !" text
 		//Starts at pixel ( 247 , 113 )
@@ -1125,7 +1134,7 @@ split
 
 
 
-	//Split when the UI disappears
+	//Split when the UI disappears for both players
 	if
 	(
 			vars.splitCounter == 1
@@ -1138,8 +1147,10 @@ split
 	)
 	{
 		byte[] pixels = vars.ReadArray(game, vars.offsetUI);
-	
-		if (!vars.MatchArray(pixels, vars.colorsUI, 0))
+
+		byte[] pixels2 = vars.ReadArray(game, vars.offsetUI2);
+		
+		if (!vars.MatchArray(pixels, vars.colorsUI) && !vars.MatchArray(pixels2, vars.colorsUI))
 		{
 			vars.splitCounter++;
 			
@@ -1170,7 +1181,7 @@ split
 		}
 	}
 
-
+	
 
 	//Prime when we see the rocket
 	else if (vars.splitCounter == 8)
@@ -1185,7 +1196,7 @@ split
 		}
 	}
 
-
+	
 	
 	//Prime when we see the inner wall of Rugname
 	else if (vars.splitCounter == 10)
