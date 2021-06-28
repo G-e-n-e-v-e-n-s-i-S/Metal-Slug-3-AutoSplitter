@@ -1150,7 +1150,7 @@ split
 
 		byte[] pixels2 = vars.ReadArray(game, vars.offsetUI2);
 		
-		if (!vars.MatchArray(pixels, vars.colorsUI) && !vars.MatchArray(pixels2, vars.colorsUI))
+		if (!vars.MatchArray(pixels, vars.colorsUI, 0) && !vars.MatchArray(pixels2, vars.colorsUI, 0))
 		{
 			vars.splitCounter++;
 			
